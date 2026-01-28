@@ -86,11 +86,11 @@ export const trainingModules: TrainingModule[] = [
         type: 'content',
         title: 'The 5 Appreciation Styles',
         content:
-          '🌟 The Spotlight Seeker - Thrives on visible, public recognition\n\n' +
-          '🤫 The Quiet Achiever - Prefers genuine, private appreciation\n\n' +
-          '✍️ The Word Collector - Values detailed, thoughtful written recognition they can revisit\n\n' +
-          '🎁 The Reward Enthusiast - Feels most appreciated through tangible rewards and experiences\n\n' +
-          '🚀 The Growth Chaser - Motivated by stretch opportunities and clear paths for growth',
+          'Fire - Thrives on visible, public recognition\n\n' +
+          'Moon - Prefers genuine, private appreciation\n\n' +
+          'Wind - Values detailed, thoughtful written recognition they can revisit\n\n' +
+          'Water - Feels most appreciated through tangible rewards and experiences\n\n' +
+          'Lightning - Motivated by stretch opportunities and clear paths for growth',
         emoji: '🎨',
       },
       {

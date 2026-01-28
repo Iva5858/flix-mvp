@@ -86,7 +86,6 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
         className="p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
       >
         <div className="flex items-start gap-3 mb-3">
-          <span className="text-3xl">{archetype.emoji}</span>
           <div>
             <h3 className="font-bold text-flix-grayscale-100 mb-1">
               {recipient.name} prefers {archetype.name}

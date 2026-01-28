@@ -4,7 +4,6 @@ export type ArchetypeId = 'spotlight-seeker' | 'quiet-achiever' | 'word-collecto
 
 export interface AppreciationArchetype {
   id: ArchetypeId;
-  emoji: string;
   name: string;
   description: string;
   preferredRecognition: string[];
@@ -15,11 +14,10 @@ export interface AppreciationArchetype {
 }
 
 export const archetypes: Record<ArchetypeId, AppreciationArchetype> = {
-  // 🌟 The Spotlight Seeker
+  // Fire
   'spotlight-seeker': {
     id: 'spotlight-seeker',
-    emoji: '🌟',
-    name: 'The Spotlight Seeker',
+    name: 'Fire',
     description: 'Thrives on external validation and visible recognition in front of others.',
     preferredRecognition: [
       'Shoutouts in team meetings',
@@ -54,11 +52,10 @@ export const archetypes: Record<ArchetypeId, AppreciationArchetype> = {
     ],
   },
 
-  // 🤫 The Quiet Achiever
+  // Moon
   'quiet-achiever': {
     id: 'quiet-achiever',
-    emoji: '🤫',
-    name: 'The Quiet Achiever',
+    name: 'Moon',
     description: 'Values genuine, personal connection and prefers recognition in private spaces.',
     preferredRecognition: [
       '1:1 conversations',
@@ -93,11 +90,10 @@ export const archetypes: Record<ArchetypeId, AppreciationArchetype> = {
     ],
   },
 
-  // ✍️ The Word Collector
+  // Wind
   'word-collector': {
     id: 'word-collector',
-    emoji: '✍️',
-    name: 'The Word Collector',
+    name: 'Wind',
     description: 'Cherishes thoughtful, well-crafted words they can revisit and reflect on.',
     preferredRecognition: [
       'Detailed emails describing their impact',
@@ -131,11 +127,10 @@ export const archetypes: Record<ArchetypeId, AppreciationArchetype> = {
     ],
   },
 
-  // 🎁 The Reward Enthusiast
+  // Water
   'reward-enthusiast': {
     id: 'reward-enthusiast',
-    emoji: '🎁',
-    name: 'The Reward Enthusiast',
+    name: 'Water',
     description: 'Feels most recognized when appreciation is paired with tangible rewards or experiences.',
     preferredRecognition: [
       'Small gifts or vouchers',
@@ -169,11 +164,10 @@ export const archetypes: Record<ArchetypeId, AppreciationArchetype> = {
     ],
   },
 
-  // 🚀 The Growth Chaser
+  // Lightning
   'growth-chaser': {
     id: 'growth-chaser',
-    emoji: '🚀',
-    name: 'The Growth Chaser',
+    name: 'Lightning',
     description: 'Energized by development, stretch opportunities, and clear pathways for growth.',
     preferredRecognition: [
       'New responsibilities or scope',

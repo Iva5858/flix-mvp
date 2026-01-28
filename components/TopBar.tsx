@@ -11,7 +11,7 @@ export default function TopBar() {
     <header className="sticky top-0 z-50 bg-flix-background border-b border-flix-grayscale-30">
       <div className="flex items-center justify-between px-4 py-3 max-w-md mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-flix-ui-primary">Overthank</span>
+          <span className="text-xl font-bold text-flix-ui-primary">OverThank</span>
         </Link>
         
         <Link href="/profile">

@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArchetypeId, archetypes, UserPreferences } from '@/lib/archetypes';
 import ArchetypeCard from './ArchetypeCard';
+import { saveQuizResults, QuestionResponse } from '@/lib/firestore';
+import { getOrCreateUserId } from '@/lib/userId';
 
 interface PreferenceQuizProps {
   onComplete: (preferences: UserPreferences) => void;
@@ -146,21 +148,82 @@ const quizQuestions = [
 ];
 
 export default function PreferenceQuiz({ onComplete, initialPreferences }: PreferenceQuizProps) {
+  // Randomize questions and answer choices once on mount
+  const randomizedQuestions = useMemo(() => {
+    const shuffled = [...quizQuestions].map(question => {
+      // Randomize answer choices within each question
+      const shuffledOptions = [...question.options];
+      for (let i = shuffledOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+      }
+      return {
+        ...question,
+        options: shuffledOptions,
+      };
+    });
+    
+    // Randomize question order
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    return shuffled;
+  }, []);
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, ArchetypeId>>({});
+  const [openEndedResponses, setOpenEndedResponses] = useState<Record<number, string>>({});
+  const [skippedQuestions, setSkippedQuestions] = useState<Set<number>>(new Set());
   const [selectedArchetypes, setSelectedArchetypes] = useState<Set<ArchetypeId>>(
     new Set(initialPreferences ? [initialPreferences.primaryArchetype, ...initialPreferences.secondaryPreferences] : [])
   );
+  const [quizComplete, setQuizComplete] = useState(false);
+  const [result, setResult] = useState<UserPreferences | null>(null);
+  const [selectedArchetypeForDetails, setSelectedArchetypeForDetails] = useState<ArchetypeId | null>(null);
+  const [showOpenEndedInput, setShowOpenEndedInput] = useState(false);
+  const [openEndedText, setOpenEndedText] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleAnswer = (archetypeId: ArchetypeId) => {
     const newAnswers = { ...answers, [currentQuestion]: archetypeId };
     setAnswers(newAnswers);
     setSelectedArchetypes(prev => new Set([...prev, archetypeId]));
+    setShowOpenEndedInput(false);
+    setOpenEndedText('');
 
-    if (currentQuestion < quizQuestions.length - 1) {
+    if (currentQuestion < randomizedQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       calculateResult(newAnswers);
+    }
+  };
+
+  const handleSkip = () => {
+    setSkippedQuestions(prev => new Set([...prev, currentQuestion]));
+    setShowOpenEndedInput(false);
+    setOpenEndedText('');
+
+    if (currentQuestion < randomizedQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      calculateResult(answers);
+    }
+  };
+
+  const handleOpenEndedSubmit = () => {
+    if (openEndedText.trim()) {
+      setOpenEndedResponses(prev => ({ ...prev, [currentQuestion]: openEndedText.trim() }));
+      setShowOpenEndedInput(false);
+      setOpenEndedText('');
+
+      if (currentQuestion < randomizedQuestions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        calculateResult(answers);
+      }
     }
   };
 
@@ -175,13 +238,24 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     };
 
     Object.values(finalAnswers).forEach(archetype => {
-      counts[archetype]++;
+      if (archetype) {
+        counts[archetype]++;
+      }
     });
 
     // Find primary archetype (most common)
-    const primaryArchetype = Object.entries(counts).reduce((a, b) =>
-      counts[a[0] as ArchetypeId] > counts[b[0] as ArchetypeId] ? a : b
-    )[0] as ArchetypeId;
+    // If no answers, use a default or initial preference
+    const totalAnswers = Object.values(counts).reduce((sum, count) => sum + count, 0);
+    let primaryArchetype: ArchetypeId;
+    
+    if (totalAnswers === 0) {
+      // Fallback to initial preference or default
+      primaryArchetype = initialPreferences?.primaryArchetype || 'spotlight-seeker';
+    } else {
+      primaryArchetype = Object.entries(counts).reduce((a, b) =>
+        counts[a[0] as ArchetypeId] > counts[b[0] as ArchetypeId] ? a : b
+      )[0] as ArchetypeId;
+    }
 
     // Get secondary preferences (others that were selected)
     const secondaryPreferences = Object.keys(counts)
@@ -194,19 +268,251 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
       visibility: initialPreferences?.visibility || 'team',
     };
 
-    onComplete(preferences);
+    setResult(preferences);
+    setQuizComplete(true);
   };
 
-  const question = quizQuestions[currentQuestion];
-  const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+  const buildQuestionResponses = (): QuestionResponse[] => {
+    const responses: QuestionResponse[] = [];
+    
+    randomizedQuestions.forEach((question, index) => {
+      // Check if this question was answered with an archetype
+      if (answers[index] !== undefined) {
+        const selectedOption = question.options.find(opt => opt.archetype === answers[index]);
+        const archetypeName = archetypes[answers[index]]?.name || answers[index];
+        responses.push({
+          questionId: question.id,
+          questionText: question.question,
+          answerType: 'archetype',
+          archetypeAnswer: archetypeName, // Save archetype name instead of ID
+          answerText: selectedOption?.text,
+        });
+      }
+      // Check if this question was answered with open-ended text
+      else if (openEndedResponses[index]) {
+        responses.push({
+          questionId: question.id,
+          questionText: question.question,
+          answerType: 'open-ended',
+          openEndedAnswer: openEndedResponses[index],
+        });
+      }
+      // Check if this question was skipped
+      else if (skippedQuestions.has(index)) {
+        responses.push({
+          questionId: question.id,
+          questionText: question.question,
+          answerType: 'skipped',
+        });
+      }
+    });
+    
+    return responses;
+  };
 
+  const handleConfirm = async () => {
+    if (result) {
+      setSaving(true);
+      setSaveError(null);
+      
+      try {
+        // Get or create user ID
+        const userId = getOrCreateUserId();
+        
+        // Build question responses array
+        const questionResponses = buildQuestionResponses();
+        
+        // Save to Firestore
+        await saveQuizResults(
+          result,
+          questionResponses,
+          userId
+        );
+        
+        // Call the onComplete callback
+        onComplete(result);
+      } catch (error: any) {
+        console.error('Error saving quiz results:', error);
+        
+        // Provide more specific error messages
+        let errorMessage = 'Failed to save results. Please try again.';
+        
+        if (error?.message?.includes('Firebase is not initialized')) {
+          errorMessage = 'Firebase is not configured. Please check your environment variables and restart the development server.';
+        } else if (error?.message?.includes('permission-denied') || error?.code === 'permission-denied') {
+          errorMessage = 'Permission denied. Please check your Firestore security rules.';
+        } else if (error?.message?.includes('ERR_BLOCKED_BY_CLIENT') || error?.code === 'ERR_BLOCKED_BY_CLIENT') {
+          errorMessage = 'Request blocked. Please disable ad blockers or browser extensions that might be blocking Firebase requests.';
+        } else if (error?.message?.includes('undefined')) {
+          errorMessage = 'Firebase configuration is missing. Please ensure all environment variables are set in .env.local and restart the server.';
+        }
+        
+        setSaveError(errorMessage);
+        setSaving(false);
+      }
+    }
+  };
+
+  const question = randomizedQuestions[currentQuestion];
+  const progress = ((currentQuestion + 1) / randomizedQuestions.length) * 100;
+  const hasAnswer = answers[currentQuestion] !== undefined || openEndedResponses[currentQuestion] !== undefined;
+
+  // Show results screen
+  if (quizComplete && result) {
+    const primaryArchetype = archetypes[result.primaryArchetype];
+    const detailArchetype = selectedArchetypeForDetails ? archetypes[selectedArchetypeForDetails] : null;
+
+    return (
+      <div className="space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h3 className="text-xl font-bold text-flix-grayscale-100 mb-6">
+            Appreciation Preferences
+          </h3>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-flix-grayscale-70 mb-2">Primary Style</p>
+              <ArchetypeCard
+                archetype={primaryArchetype}
+                size="medium"
+                onClick={() => setSelectedArchetypeForDetails(result.primaryArchetype)}
+              />
+            </div>
+
+            {result.secondaryPreferences.length > 0 && (
+              <div>
+                <p className="text-sm text-flix-grayscale-70 mb-2">Secondary Preferences</p>
+                <div className="space-y-2">
+                  {result.secondaryPreferences.map((id) => (
+                    <ArchetypeCard
+                      key={id}
+                      archetype={archetypes[id]}
+                      size="small"
+                      onClick={() => setSelectedArchetypeForDetails(id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {detailArchetype && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 bg-flix-background rounded-card p-6 border border-flix-grayscale-30"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-xl font-bold text-flix-grayscale-100">
+                  {detailArchetype.name}
+                </h4>
+                <button
+                  onClick={() => setSelectedArchetypeForDetails(null)}
+                  className="text-sm text-flix-grayscale-70 hover:text-flix-grayscale-100"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <p className="text-flix-grayscale-90 mb-6">
+                {detailArchetype.description}
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
+                    Preferred Recognition:
+                  </h5>
+                  <div className="flex flex-wrap gap-2">
+                    {detailArchetype.preferredRecognition.map((rec, idx) => (
+                      <span
+                        key={idx}
+                        className="text-xs px-3 py-1 rounded-full bg-flix-primary/10 text-flix-grayscale-100 border border-flix-primary/20"
+                      >
+                        {rec}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
+                    Best Practices:
+                  </h5>
+                  <ul className="space-y-1">
+                    {detailArchetype.do.map((item, idx) => (
+                      <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
+                        <span className="text-flix-feedback-success">✓</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
+                    What to Avoid:
+                  </h5>
+                  <ul className="space-y-1">
+                    {detailArchetype.dont.map((item, idx) => (
+                      <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
+                        <span className="text-flix-feedback-danger">✗</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
+                    Suggested Channels:
+                  </h5>
+                  <div className="flex flex-wrap gap-2">
+                    {detailArchetype.suggestedChannels.map((channel, idx) => (
+                      <span
+                        key={idx}
+                        className="text-xs px-3 py-1 rounded-full bg-flix-grayscale-10 text-flix-grayscale-70"
+                      >
+                        {channel}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {saveError && (
+            <div className="mt-4 p-3 bg-flix-feedback-danger/10 border border-flix-feedback-danger/20 rounded-card">
+              <p className="text-sm text-flix-feedback-danger">{saveError}</p>
+            </div>
+          )}
+          
+          <motion.button
+            whileHover={{ scale: saving ? 1 : 1.02 }}
+            whileTap={{ scale: saving ? 1 : 0.98 }}
+            onClick={handleConfirm}
+            disabled={saving}
+            className="w-full mt-6 py-3 bg-flix-primary text-white rounded-button font-semibold hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {saving ? 'Saving...' : 'Save Preferences'}
+          </motion.button>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Show quiz questions
   return (
     <div className="space-y-6">
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xl font-bold text-flix-grayscale-100">Preference Quiz</h3>
           <span className="text-sm text-flix-grayscale-70">
-            {currentQuestion + 1}/{quizQuestions.length}
+            {currentQuestion + 1}/{randomizedQuestions.length}
           </span>
         </div>
         <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden">
@@ -229,27 +535,102 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
           {question.question}
         </h4>
 
-        <div className="space-y-3">
-          {question.options.map((option) => {
-            const archetype = archetypes[option.archetype];
-            return (
-              <motion.div
-                key={option.archetype}
+        {!showOpenEndedInput ? (
+          <>
+            <div className="space-y-3 mb-4">
+              {question.options.map((option) => {
+                const archetype = archetypes[option.archetype];
+                return (
+                  <motion.div
+                    key={option.archetype}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleAnswer(option.archetype)}
+                    className="cursor-pointer"
+                  >
+                    <div className="p-4 rounded-card border-2 border-flix-grayscale-30 bg-flix-background hover:border-flix-primary transition-colors">
+                      <div className="flex items-center gap-3">
+                        <span className="text-flix-grayscale-100 font-medium">{option.text}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="space-y-3">
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleAnswer(option.archetype)}
-                className="cursor-pointer"
+                onClick={() => setShowOpenEndedInput(true)}
+                className="w-full p-4 rounded-card border-2 border-dashed border-flix-grayscale-30 bg-flix-background hover:border-flix-primary transition-colors text-flix-grayscale-100 font-medium"
               >
-                <div className="p-4 rounded-card border-2 border-flix-grayscale-30 bg-flix-background hover:border-flix-primary transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{archetype.emoji}</span>
-                    <span className="text-flix-grayscale-100 font-medium">{option.text}</span>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                + Add your own answer
+              </motion.button>
+
+              <div className="flex gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSkip}
+                  className="flex-1 py-3 px-4 rounded-button border-2 border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-60 font-medium transition-colors"
+                >
+                  Skip
+                </motion.button>
+
+                {hasAnswer && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      if (currentQuestion < randomizedQuestions.length - 1) {
+                        setCurrentQuestion(currentQuestion + 1);
+                      } else {
+                        calculateResult(answers);
+                      }
+                    }}
+                    className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors"
+                  >
+                    Next →
+                  </motion.button>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="space-y-3">
+            <textarea
+              value={openEndedText}
+              onChange={(e) => setOpenEndedText(e.target.value)}
+              placeholder="Type your answer here..."
+              className="w-full p-4 rounded-card border-2 border-flix-grayscale-30 bg-flix-background text-flix-grayscale-100 placeholder-flix-grayscale-50 focus:border-flix-primary focus:outline-none resize-none"
+              rows={4}
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  setShowOpenEndedInput(false);
+                  setOpenEndedText('');
+                }}
+                className="flex-1 py-3 px-4 rounded-button border-2 border-flix-grayscale-30 bg-flix-background hover:bg-flix-grayscale-10 text-flix-grayscale-70 font-medium transition-colors"
+              >
+                Cancel
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleOpenEndedSubmit}
+                disabled={!openEndedText.trim()}
+                className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Submit
+              </motion.button>
+            </div>
+          </div>
+        )}
       </motion.div>
     </div>
   );

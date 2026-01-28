@@ -39,7 +39,6 @@ export default function ArchetypeCard({
       `}
     >
       <div className="flex items-start gap-3">
-        <span className="text-3xl">{archetype.emoji}</span>
         <div className="flex-1">
           <h3 className="font-bold text-flix-grayscale-100 mb-1">{archetype.name}</h3>
           <p className="text-sm text-flix-grayscale-70 mb-2">{archetype.description}</p>
