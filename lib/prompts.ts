@@ -14,7 +14,7 @@ export function buildAppreciationPrompt(context: AppreciationContext): string {
 
   return `You are an expert in employee appreciation and recognition. Help craft personalized appreciation guidance.
 
-Recipient's Appreciation Style: ${recipientArchetype.name} (${recipientArchetype.emoji})
+Recipient's Appreciation Style: ${recipientArchetype.name}
 - Description: ${recipientArchetype.description}
 - Preferred Recognition: ${recipientArchetype.preferredRecognition.join(', ')}
 - Do's: ${recipientArchetype.do.join(', ')}
