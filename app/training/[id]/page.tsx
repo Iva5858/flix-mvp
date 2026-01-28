@@ -26,7 +26,8 @@ export default function TrainingModulePage() {
       const progress = JSON.parse(savedProgress);
       if (progress.completed) {
         setCompleted(true);
-        setCurrentLesson(trainingModule?.lessons.length || 0);
+        // Set to last valid lesson index instead of out-of-bounds
+        setCurrentLesson(trainingModule ? trainingModule.lessons.length - 1 : 0);
       }
     }
   }, [moduleId, trainingModule]);
@@ -46,39 +47,7 @@ export default function TrainingModulePage() {
     );
   }
 
-  const lesson = trainingModule.lessons[currentLesson];
-  const progress = ((currentLesson + 1) / trainingModule.lessons.length) * 100;
-  const isLastLesson = currentLesson === trainingModule.lessons.length - 1;
-  const isQuiz = lesson.type === 'quiz';
-
-  const handleNext = () => {
-    if (isLastLesson) {
-      // Mark as completed
-      localStorage.setItem(
-        `training-${moduleId}`,
-        JSON.stringify({ completed: true, completedAt: new Date().toISOString() })
-      );
-      setCompleted(true);
-    } else {
-      setCurrentLesson(currentLesson + 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
-    }
-  };
-
-  const handleAnswerSelect = (index: number) => {
-    if (isQuiz && !showExplanation) {
-      setSelectedAnswer(index);
-      setShowExplanation(true);
-    }
-  };
-
-  const handleQuizNext = () => {
-    if (showExplanation) {
-      handleNext();
-    }
-  };
-
+  // Early return if completed - this prevents accessing lesson when it might be undefined
   if (completed) {
     return (
       <div className="min-h-screen bg-flix-grayscale-10 pb-20">
@@ -132,6 +101,42 @@ export default function TrainingModulePage() {
     );
   }
 
+  // Ensure currentLesson is within bounds
+  const safeCurrentLesson = Math.min(currentLesson, trainingModule.lessons.length - 1);
+  const lesson = trainingModule.lessons[safeCurrentLesson];
+  const progress = ((safeCurrentLesson + 1) / trainingModule.lessons.length) * 100;
+  const isLastLesson = safeCurrentLesson === trainingModule.lessons.length - 1;
+  const isQuiz = lesson?.type === 'quiz';
+
+  const handleNext = () => {
+    if (isLastLesson) {
+      // Mark as completed
+      localStorage.setItem(
+        `training-${moduleId}`,
+        JSON.stringify({ completed: true, completedAt: new Date().toISOString() })
+      );
+      setCompleted(true);
+    } else {
+      const nextLesson = Math.min(safeCurrentLesson + 1, trainingModule.lessons.length - 1);
+      setCurrentLesson(nextLesson);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+    }
+  };
+
+  const handleAnswerSelect = (index: number) => {
+    if (isQuiz && !showExplanation) {
+      setSelectedAnswer(index);
+      setShowExplanation(true);
+    }
+  };
+
+  const handleQuizNext = () => {
+    if (showExplanation) {
+      handleNext();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-flix-grayscale-10 pb-20">
       <TopBar />
@@ -144,7 +149,7 @@ export default function TrainingModulePage() {
               ← Back
             </Link>
             <span className="text-sm text-flix-grayscale-70">
-              {currentLesson + 1}/{trainingModule.lessons.length}
+              {safeCurrentLesson + 1}/{trainingModule.lessons.length}
             </span>
           </div>
           <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden">
@@ -160,7 +165,7 @@ export default function TrainingModulePage() {
         {/* Lesson Content */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentLesson}
+            key={safeCurrentLesson}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -234,18 +239,37 @@ export default function TrainingModulePage() {
                     );
                   })}
 
-                  {showExplanation && lesson.explanation && (
+                  {showExplanation && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className={`p-4 rounded-card ${
                         selectedAnswer === lesson.correctAnswer
                           ? 'bg-flix-feedback-success/10 border border-flix-feedback-success/20'
-                          : 'bg-flix-feedback-warning/10 border border-flix-feedback-warning/20'
+                          : 'bg-flix-feedback-danger/10 border border-flix-feedback-danger/20'
                       }`}
                     >
+                      <div className="flex items-start gap-2 mb-2">
+                        {selectedAnswer === lesson.correctAnswer ? (
+                          <>
+                            <span className="text-lg">✓</span>
+                            <p className="text-sm font-semibold text-flix-feedback-success">
+                              Correct!
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-lg">✗</span>
+                            <p className="text-sm font-semibold text-flix-feedback-danger">
+                              Not quite right
+                            </p>
+                          </>
+                        )}
+                      </div>
                       <p className="text-sm text-flix-grayscale-90">
-                        {lesson.explanation}
+                        {selectedAnswer === lesson.correctAnswer
+                          ? lesson.explanation
+                          : lesson.incorrectExplanation || lesson.explanation}
                       </p>
                     </motion.div>
                   )}

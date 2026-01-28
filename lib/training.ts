@@ -8,6 +8,7 @@ export interface LessonSlide {
   options?: string[];
   correctAnswer?: number;
   explanation?: string;
+  incorrectExplanation?: string;
 }
 
 export interface TrainingModule {
@@ -52,6 +53,7 @@ export const trainingModules: TrainingModule[] = [
         options: ['25%', '50%', '75%', '100%'],
         correctAnswer: 1,
         explanation: 'Correct! Employees who feel appreciated are 50% more productive. That\'s a huge impact!',
+        incorrectExplanation: 'Not quite. The correct answer is 50%. Research shows that employees who feel appreciated are 50% more productive—that\'s a significant boost!',
       },
       {
         type: 'example',
@@ -83,7 +85,12 @@ export const trainingModules: TrainingModule[] = [
       {
         type: 'content',
         title: 'The 5 Appreciation Styles',
-        content: '🎤 Public Praise - Loves being recognized in front of others\n\n💬 Private Feedback - Prefers 1:1 conversations\n\n📝 Written Words - Values thoughtful messages\n\n🎁 Tangible Rewards - Appreciates small gifts\n\n🚀 Growth-Oriented - Motivated by opportunities',
+        content:
+          '🌟 The Spotlight Seeker - Thrives on visible, public recognition\n\n' +
+          '🤫 The Quiet Achiever - Prefers genuine, private appreciation\n\n' +
+          '✍️ The Word Collector - Values detailed, thoughtful written recognition they can revisit\n\n' +
+          '🎁 The Reward Enthusiast - Feels most appreciated through tangible rewards and experiences\n\n' +
+          '🚀 The Growth Chaser - Motivated by stretch opportunities and clear paths for growth',
         emoji: '🎨',
       },
       {
@@ -98,6 +105,7 @@ export const trainingModules: TrainingModule[] = [
         ],
         correctAnswer: 1,
         explanation: 'Exactly! People who prefer private feedback would feel uncomfortable with public recognition. Always respect their preference!',
+        incorrectExplanation: 'Not quite. The correct answer is "Calling them out in a team meeting." People who prefer private feedback would feel uncomfortable with public recognition. Always respect their preference!',
       },
       {
         type: 'content',
@@ -138,6 +146,7 @@ export const trainingModules: TrainingModule[] = [
         ],
         correctAnswer: 1,
         explanation: 'Perfect! The second option is specific, sincere, and explains the impact. That\'s what makes appreciation meaningful!',
+        incorrectExplanation: 'Not quite. The second option is the most effective because it\'s specific, sincere, and explains the impact. Effective appreciation focuses on the specific action, its impact, and why it mattered.',
       },
       {
         type: 'content',
@@ -178,6 +187,7 @@ export const trainingModules: TrainingModule[] = [
         ],
         correctAnswer: 1,
         explanation: 'Yes! Appreciate right away while the impact is fresh. This makes it more meaningful and memorable.',
+        incorrectExplanation: 'Not quite. The best time to show appreciation is right away, while the impact is fresh. Timely appreciation is more meaningful and memorable than waiting.',
       },
       {
         type: 'content',

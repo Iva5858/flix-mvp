@@ -16,8 +16,8 @@ const mockUser = {
   role: 'Employee',
   department: 'All Teams',
   preferences: {
-    primaryArchetype: 'growth-oriented' as ArchetypeId,
-    secondaryPreferences: ['written-words'] as ArchetypeId[],
+    primaryArchetype: 'growth-chaser' as ArchetypeId,
+    secondaryPreferences: ['word-collector'] as ArchetypeId[],
     visibility: 'team' as const,
   },
 };
