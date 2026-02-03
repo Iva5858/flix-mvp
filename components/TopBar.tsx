@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 
@@ -11,7 +12,14 @@ export default function TopBar() {
     <header className="sticky top-0 z-50 bg-flix-background border-b border-flix-grayscale-30">
       <div className="flex items-center justify-between px-4 py-3 max-w-md mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold text-flix-ui-primary">OverThank</span>
+          <Image
+            src="/Flix_Logo_2016.png"
+            alt="Flix"
+            width={120}
+            height={36}
+            className="h-9 w-auto object-contain"
+            priority
+          />
         </Link>
         
         <Link href="/profile">
