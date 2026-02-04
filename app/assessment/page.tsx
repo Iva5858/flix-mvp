@@ -222,7 +222,7 @@ export default function AssessmentPage() {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-3xl font-bold text-flix-grayscale-100">
-                🤖 Self Assessment
+                🤖 Self Assessment (Giving Appreciation)
               </h1>
               <span className="text-sm text-flix-grayscale-70">
                 {currentQuestion + 1}/{assessmentQuestions.length}
