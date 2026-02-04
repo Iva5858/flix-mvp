@@ -50,7 +50,7 @@ export const trainingModules: TrainingModule[] = [
         type: 'quiz',
         title: 'Quick Check',
         content: 'What percentage of employees are more productive when they feel appreciated?',
-        options: ['25%', '50%', '75%', '100%'],
+        options: ['5%', '50%', '15%', '45%'],
         correctAnswer: 1,
         explanation: 'Correct! Employees who feel appreciated are 50% more productive. That\'s a huge impact!',
         incorrectExplanation: 'Not quite. The correct answer is 50%. Research shows that employees who feel appreciated are 50% more productive—that\'s a significant boost!',
