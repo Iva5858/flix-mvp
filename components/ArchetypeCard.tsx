@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { AppreciationArchetype } from '@/lib/archetypes';
 
 interface ArchetypeCardProps {
@@ -19,37 +18,36 @@ export default function ArchetypeCard({
   const sizeClasses = {
     small: 'p-3',
     medium: 'p-4',
-    large: 'p-6',
+    large: 'p-5',
   };
 
   return (
-    <motion.div
-      whileHover={{ scale: onClick ? 1.02 : 1 }}
-      whileTap={{ scale: onClick ? 0.98 : 1 }}
+    <div
       onClick={onClick}
+      role={onClick ? 'button' : undefined}
       className={`
         ${sizeClasses[size]}
-        rounded-card border-2 transition-all cursor-pointer
+        rounded-card transition-all duration-200
+        ${onClick ? 'cursor-pointer' : 'cursor-default'}
         ${
           isSelected
-            ? 'border-flix-primary bg-flix-primary/10 shadow-lg'
-            : 'border-flix-grayscale-30 bg-flix-background hover:border-flix-primary/50'
+            ? 'bg-flix-primary/10 border border-flix-primary/20 shadow-soft'
+            : 'bg-flix-grayscale-10 border border-flix-grayscale-20 hover:border-flix-grayscale-30'
         }
-        ${onClick ? 'cursor-pointer' : 'cursor-default'}
       `}
     >
       <div className="flex items-start gap-3">
-        <div className="flex-1">
-          <h3 className="font-bold text-flix-grayscale-100 mb-1">{archetype.name}</h3>
-          <p className="text-sm text-flix-grayscale-70 mb-2">{archetype.description}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">{archetype.name}</h3>
+          <p className="text-[13px] text-flix-grayscale-70 leading-relaxed">{archetype.description}</p>
           {size !== 'small' && (
             <div className="mt-3">
-              <p className="text-xs font-semibold text-flix-grayscale-90 mb-1">Preferred Recognition:</p>
-              <div className="flex flex-wrap gap-1">
+              <p className="text-[11px] font-medium text-flix-grayscale-70 uppercase tracking-wider mb-1.5">Preferred Recognition</p>
+              <div className="flex flex-wrap gap-1.5">
                 {archetype.preferredRecognition.slice(0, 3).map((rec, idx) => (
                   <span
                     key={idx}
-                    className="text-xs px-2 py-1 rounded-full bg-flix-grayscale-10 text-flix-grayscale-70"
+                    className="text-[11px] px-2 py-0.5 rounded-button bg-flix-grayscale-20 text-flix-grayscale-80"
                   >
                     {rec}
                   </span>
@@ -59,7 +57,6 @@ export default function ArchetypeCard({
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
-

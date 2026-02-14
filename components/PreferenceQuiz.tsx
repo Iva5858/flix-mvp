@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useMemo } from 'react';
 import { ArchetypeId, archetypes, UserPreferences } from '@/lib/archetypes';
 import { Icon } from '@/lib/icons';
 import ArchetypeCard from './ArchetypeCard';
-import { saveQuizResults, QuestionResponse } from '@/lib/firestore';
+import type { QuestionResponse } from '@/lib/firestore';
 import { getOrCreateUserId } from '@/lib/userId';
 
 interface PreferenceQuizProps {
@@ -335,18 +334,10 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
       setSaveError(null);
       
       try {
-        // Get or create user ID
         const userId = getOrCreateUserId();
-        
-        // Build question responses array
         const questionResponses = buildQuestionResponses();
-        
-        // Save to Firestore
-        await saveQuizResults(
-          result,
-          questionResponses,
-          userId
-        );
+        const { saveQuizResults } = await import('@/lib/firestore');
+        await saveQuizResults(result, questionResponses, userId);
         
         // Call the onComplete callback
         onComplete(result);
@@ -385,17 +376,14 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
     return (
       <div className="space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h3 className="text-xl font-bold text-flix-grayscale-100 mb-6">
+        <div className="animate-fade-in">
+          <h3 className="text-lg font-semibold text-flix-grayscale-100 mb-6 tracking-tight">
             Appreciation Preferences
           </h3>
 
           <div className="space-y-4">
             <div>
-              <p className="text-sm text-flix-grayscale-70 mb-2">Primary Style</p>
+              <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">Primary Style</p>
               <ArchetypeCard
                 archetype={primaryArchetype}
                 size="medium"
@@ -405,7 +393,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
             {result.secondaryPreferences.length > 0 && (
               <div>
-                <p className="text-sm text-flix-grayscale-70 mb-2">Secondary Preferences</p>
+                <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">Secondary</p>
                 <div className="space-y-2">
                   {result.secondaryPreferences.map((id) => (
                     <ArchetypeCard
@@ -421,13 +409,9 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
           </div>
 
           {detailArchetype && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 bg-flix-background rounded-card p-6 border border-flix-grayscale-30"
-            >
+            <div className="mt-6 bg-flix-background rounded-card p-5 shadow-card border border-flix-grayscale-20 animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xl font-bold text-flix-grayscale-100">
+                <h4 className="text-lg font-semibold text-flix-grayscale-100">
                   {detailArchetype.name}
                 </h4>
                 <button
@@ -503,7 +487,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {saveError && (
@@ -512,16 +496,14 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
             </div>
           )}
           
-          <motion.button
-            whileHover={{ scale: saving ? 1 : 1.02 }}
-            whileTap={{ scale: saving ? 1 : 0.98 }}
+          <button
             onClick={handleConfirm}
             disabled={saving}
-            className="w-full mt-6 py-3 bg-flix-primary text-white rounded-button font-semibold hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-6 py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[14px] active:scale-[0.98]"
           >
             {saving ? 'Saving...' : 'Save Preferences'}
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     );
   }
@@ -531,56 +513,50 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     <div className="space-y-6">
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-bold text-flix-grayscale-100">Preference Quiz</h3>
-          <span className="text-sm text-flix-grayscale-70">
+          <h3 className="text-lg font-semibold text-flix-grayscale-100 tracking-tight">Preference Quiz</h3>
+          <span className="text-[13px] text-flix-grayscale-50 font-medium">
             {currentQuestion + 1}/{randomizedQuestions.length}
           </span>
         </div>
-        <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-flix-primary rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
+        <div className="h-1 bg-flix-grayscale-20 rounded-pill overflow-hidden">
+          <div
+            className="h-full bg-flix-primary rounded-pill transition-[width] duration-300 ease-out"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
-      <motion.div
-        key={currentQuestion}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-      >
-        <h4 className="text-lg font-semibold text-flix-grayscale-100 mb-4">
+      <div key={currentQuestion} className="animate-fade-in">
+        <h4 className="text-[16px] font-medium text-flix-grayscale-100 mb-4 leading-snug">
           {question.question}
         </h4>
 
         {!showOpenEndedInput ? (
           <>
-            <p className="text-sm text-flix-grayscale-70 mb-3">
+            <p className="text-[13px] text-flix-grayscale-70 mb-3">
               Select all that apply
             </p>
-            <div className="space-y-3 mb-4">
+            <div className="space-y-2 mb-4">
               {question.options.map((option) => {
                 const isSelected = currentSelections.includes(option.archetype);
                 return (
-                  <motion.div
+                  <div
                     key={option.archetype}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => toggleAnswer(option.archetype)}
-                    className="cursor-pointer"
+                    onKeyDown={(e) => e.key === 'Enter' && toggleAnswer(option.archetype)}
+                    className="cursor-pointer active:scale-[0.995] transition-transform"
                   >
                     <div
-                      className={`p-4 rounded-card border-2 transition-colors flex items-center gap-3 ${
+                      className={`p-4 rounded-card border transition-all duration-200 flex items-center gap-3 ${
                         isSelected
                           ? 'border-flix-primary bg-flix-primary/10'
-                          : 'border-flix-grayscale-30 bg-flix-background hover:border-flix-primary/50'
+                          : 'border-flix-grayscale-20 bg-flix-grayscale-10 hover:border-flix-grayscale-30'
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
+                        className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 ${
                           isSelected
                             ? 'border-flix-primary bg-flix-primary'
                             : 'border-flix-grayscale-50'
@@ -594,40 +570,37 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                         {option.text}
                       </span>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
 
             <div className="space-y-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowOpenEndedInput(true)}
-                className="w-full p-4 rounded-card border-2 border-dashed border-flix-grayscale-30 bg-flix-background hover:border-flix-primary transition-colors text-flix-grayscale-100 font-medium"
-              >
-                + Add your own answer
-              </motion.button>
+                <button
+                  type="button"
+                  onClick={() => setShowOpenEndedInput(true)}
+                  className="w-full p-4 rounded-card border border-dashed border-flix-grayscale-20 bg-flix-grayscale-10 hover:border-flix-grayscale-30 transition-colors text-flix-grayscale-100 font-medium text-[14px] active:scale-[0.98]"
+                >
+                  + Add your own answer
+                </button>
 
               <div className="flex gap-3">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
+                  type="button"
                   onClick={handleSkip}
-                  className="flex-1 py-3 px-4 rounded-button border-2 border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-60 font-medium transition-colors"
+                  className="flex-1 py-3 px-4 rounded-button border border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-70 font-medium transition-colors text-[14px] active:scale-[0.98]"
                 >
                   Skip
-                </motion.button>
+                </button>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
+                  type="button"
                   onClick={handleNext}
                   disabled={!hasAnswer}
-                  className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[14px] active:scale-[0.98]"
                 >
                   Next
-                </motion.button>
+                </button>
               </div>
             </div>
           </>
@@ -637,35 +610,33 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
               value={openEndedText}
               onChange={(e) => setOpenEndedText(e.target.value)}
               placeholder="Type your answer here..."
-              className="w-full p-4 rounded-card border-2 border-flix-grayscale-30 bg-flix-background text-flix-grayscale-100 placeholder-flix-grayscale-50 focus:border-flix-primary focus:outline-none resize-none"
+              className="w-full p-4 rounded-card border border-flix-grayscale-20 bg-flix-grayscale-10 text-flix-grayscale-100 placeholder-flix-grayscale-50 focus:border-flix-primary focus:outline-none focus:ring-1 focus:ring-flix-primary/30 resize-none text-[14px]"
               rows={4}
               autoFocus
             />
             <div className="flex gap-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  setShowOpenEndedInput(false);
-                  setOpenEndedText('');
-                }}
-                className="flex-1 py-3 px-4 rounded-button border-2 border-flix-grayscale-30 bg-flix-background hover:bg-flix-grayscale-10 text-flix-grayscale-70 font-medium transition-colors"
-              >
-                Cancel
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleOpenEndedSubmit}
-                disabled={!openEndedText.trim()}
-                className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Submit
-              </motion.button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowOpenEndedInput(false);
+                    setOpenEndedText('');
+                  }}
+                  className="flex-1 py-3 px-4 rounded-button border border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-70 font-medium transition-colors text-[14px] active:scale-[0.98]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenEndedSubmit}
+                  disabled={!openEndedText.trim()}
+                  className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                >
+                  Submit
+                </button>
             </div>
           </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
@@ -10,9 +9,10 @@ const toolboxTools = [
   {
     id: 'appreciate-colleague',
     title: 'Appreciate a Colleague',
-    description: 'Get personalized tips for appreciating someone',
+    description: 'Personalized tips for appreciating someone',
     icon: 'Heart',
-    color: 'bg-flix-primary',
+    accentColor: 'text-flix-primary',
+    bgColor: 'bg-flix-primary/10',
     href: '/toolbox/appreciate-colleague',
   },
   {
@@ -20,7 +20,8 @@ const toolboxTools = [
     title: 'Phrase Generator',
     description: 'Generate appreciation messages',
     icon: 'Sparkles',
-    color: 'bg-flix-secondary',
+    accentColor: 'text-flix-secondary',
+    bgColor: 'bg-flix-secondary/10',
     href: '/toolbox/phrase-generator',
   },
   {
@@ -28,7 +29,8 @@ const toolboxTools = [
     title: 'Channel Guide',
     description: 'Choose the best way to show appreciation',
     icon: 'Smartphone',
-    color: 'bg-flix-feedback-info',
+    accentColor: 'text-flix-feedback-info',
+    bgColor: 'bg-flix-feedback-info/10',
     href: '/toolbox/channel-guide',
   },
   {
@@ -36,73 +38,59 @@ const toolboxTools = [
     title: 'Timing Tips',
     description: 'Learn when to show appreciation',
     icon: 'Clock',
-    color: 'bg-flix-feedback-success',
+    accentColor: 'text-flix-feedback-success',
+    bgColor: 'bg-flix-feedback-success/10',
     href: '/toolbox/timing-tips',
   },
 ];
 
 export default function ToolboxPage() {
   return (
-    <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+    <div className="min-h-screen bg-flix-grayscale-10 pb-24">
       <TopBar />
       
-      <main className="max-w-md mx-auto px-4 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
-            <Icon name="Wrench" size={32} className="text-flix-primary" />
-            Quick Reference Toolbox
+      <main className="max-w-lg mx-auto px-5 py-8">
+        <div className="animate-fade-in">
+          <p className="text-sm font-medium text-flix-primary mb-1">Toolbox</p>
+          <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">
+            Quick Reference
           </h1>
-          <p className="text-flix-grayscale-70 mb-6">
+          <p className="text-flix-grayscale-70 text-[15px] leading-relaxed mb-8">
             Instant tools to help you show appreciation effectively
           </p>
 
-          <div className="grid grid-cols-1 gap-4">
-            {toolboxTools.map((tool, index) => (
-              <motion.div
-                key={tool.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link href={tool.href}>
-                  <div className="bg-flix-background rounded-card p-5 border border-flix-grayscale-30 shadow-sm hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-1 gap-3">
+            {toolboxTools.map((tool) => (
+              <Link key={tool.id} href={tool.href}>
+                <div className="group bg-flix-background rounded-card p-4 shadow-card hover:shadow-card-hover transition-all duration-200 border border-flix-grayscale-20 hover:border-flix-grayscale-30">
                     <div className="flex items-center gap-4">
-                      <div className={`${tool.color} w-16 h-16 rounded-card flex items-center justify-center flex-shrink-0`}>
-                        <Icon name={tool.icon} size={32} className="text-white" />
+                      <div className={`flex-shrink-0 w-11 h-11 rounded-lg ${tool.bgColor} flex items-center justify-center`}>
+                        <Icon name={tool.icon} size={22} className={tool.accentColor} />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-flix-grayscale-100 mb-1">{tool.title}</h3>
-                        <p className="text-sm text-flix-grayscale-70">{tool.description}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">{tool.title}</h3>
+                        <p className="text-[13px] text-flix-grayscale-70">{tool.description}</p>
                       </div>
-                      <Icon name="ChevronRight" size={20} className="text-flix-grayscale-50" />
+                      <Icon name="ChevronRight" size={18} className="text-flix-grayscale-30 flex-shrink-0 group-hover:text-flix-grayscale-50 transition-colors" />
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
+                </div>
+              </Link>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-8 p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
-          >
-            <p className="text-sm text-flix-grayscale-90">
-              <span className="font-semibold inline-flex items-center gap-1"><Icon name="Lightbulb" size={16} /> Pro Tip:</span> Use &quot;Appreciate a Colleague&quot; to get personalized guidance based on their preferences!
+          <div className="mt-8 p-4 rounded-card bg-flix-primary/5 border border-flix-primary/10">
+            <p className="text-[13px] text-flix-grayscale-90 leading-relaxed">
+              <span className="font-medium text-flix-grayscale-100 inline-flex items-center gap-1.5">
+                <Icon name="Lightbulb" size={14} className="text-flix-primary" />
+                Pro Tip
+              </span>
+              {' — '}Use &quot;Appreciate a Colleague&quot; for personalized guidance based on their preferences
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
 
       <BottomNav />
     </div>
   );
 }
-

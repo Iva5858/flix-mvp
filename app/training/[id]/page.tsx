@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
@@ -11,7 +10,6 @@ import { trainingModules } from '@/lib/training';
 
 export default function TrainingModulePage() {
   const params = useParams();
-  const router = useRouter();
   const moduleId = parseInt(params.id as string);
   const trainingModule = trainingModules.find((m) => m.id === moduleId);
 
@@ -35,12 +33,12 @@ export default function TrainingModulePage() {
 
   if (!trainingModule) {
     return (
-      <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+      <div className="min-h-screen bg-flix-grayscale-10 pb-24">
         <TopBar />
-        <main className="max-w-md mx-auto px-4 py-6">
-          <p className="text-flix-grayscale-70">Lesson not found</p>
-          <Link href="/training" className="text-flix-primary hover:underline">
-            ← Back to Lessons
+        <main className="max-w-lg mx-auto px-5 py-8">
+          <p className="text-[14px] text-flix-grayscale-70 mb-4">Lesson not found</p>
+          <Link href="/training" className="text-[14px] font-medium text-flix-primary hover:text-flix-ui-primary transition-colors">
+            Back to Lessons
           </Link>
         </main>
         <BottomNav />
@@ -48,54 +46,42 @@ export default function TrainingModulePage() {
     );
   }
 
-  // Early return if completed - this prevents accessing lesson when it might be undefined
   if (completed) {
     return (
-      <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+      <div className="min-h-screen bg-flix-grayscale-10 pb-24">
         <TopBar />
-        <main className="max-w-md mx-auto px-4 py-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-12"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200 }}
-              className="mb-6 flex justify-center"
-            >
-              <Icon name="PartyPopper" size={80} className="text-flix-primary" />
-            </motion.div>
-            <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-4">
+        <main className="max-w-lg mx-auto px-5 py-8">
+          <div className="text-center py-12 animate-fade-in">
+            <div className="w-16 h-16 rounded-full bg-flix-primary/10 flex items-center justify-center mx-auto mb-6">
+              <Icon name="PartyPopper" size={40} className="text-flix-primary" />
+            </div>
+            <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">
               You crushed it!
             </h1>
-            <p className="text-flix-grayscale-70 mb-8">
+            <p className="text-[15px] text-flix-grayscale-70 mb-8">
               You&apos;ve completed &quot;{trainingModule.title}&quot;
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Link href="/training">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full py-3 bg-flix-primary text-white rounded-button font-semibold hover:bg-flix-ui-primary transition-colors"
+                <button
+                  type="button"
+                  className="w-full py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors text-[14px] active:scale-[0.98]"
                 >
                   Back to Lessons
-                </motion.button>
+                </button>
               </Link>
               {moduleId < trainingModules.length && (
                 <Link href={`/training/${moduleId + 1}`}>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full py-3 bg-flix-background border-2 border-flix-primary text-flix-primary rounded-button font-semibold hover:bg-flix-primary/5 transition-colors"
+                  <button
+                    type="button"
+                    className="w-full py-3 bg-flix-background border border-flix-primary text-flix-primary rounded-button font-medium hover:bg-flix-primary/5 transition-colors text-[14px] active:scale-[0.98]"
                   >
-                    Next Lesson →
-                  </motion.button>
+                    Next Lesson
+                  </button>
                 </Link>
               )}
             </div>
-          </motion.div>
+          </div>
         </main>
         <BottomNav />
       </div>
@@ -139,49 +125,41 @@ export default function TrainingModulePage() {
   };
 
   return (
-    <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+    <div className="min-h-screen bg-flix-grayscale-10 pb-24">
       <TopBar />
       
-      <main className="max-w-md mx-auto px-4 py-6">
-        {/* Progress Bar */}
+      <main className="max-w-lg mx-auto px-5 py-8">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <Link href="/training" className="text-flix-primary hover:underline text-sm">
-              ← Back
+            <Link href="/training" className="text-[14px] font-medium text-flix-primary hover:text-flix-ui-primary transition-colors">
+              Back
             </Link>
-            <span className="text-sm text-flix-grayscale-70">
+            <span className="text-[13px] text-flix-grayscale-50 font-medium">
               {safeCurrentLesson + 1}/{trainingModule.lessons.length}
             </span>
           </div>
-          <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-flix-primary rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
+          <div className="h-1 bg-flix-grayscale-20 rounded-pill overflow-hidden">
+            <div
+              className="h-full bg-flix-primary rounded-pill transition-[width] duration-300 ease-out"
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Lesson Content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={safeCurrentLesson}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="bg-flix-background rounded-card p-6 border border-flix-grayscale-30 shadow-sm mb-6"
-          >
+        <div
+          key={safeCurrentLesson}
+          className="bg-flix-background rounded-card p-5 shadow-card border border-flix-grayscale-20 mb-6 animate-fade-in"
+        >
             {/* Lesson Header */}
             <div className="flex items-start gap-4 mb-4">
               {lesson.icon && (
-                <div className="flex-shrink-0">
-                  <Icon name={lesson.icon} size={40} className="text-flix-primary" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-flix-primary/10 flex items-center justify-center">
+                  <Icon name={lesson.icon} size={22} className="text-flix-primary" />
                 </div>
               )}
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-flix-grayscale-100 mb-2">
+                <h2 className="text-lg font-semibold text-flix-grayscale-100 mb-2">
                   {lesson.title}
                 </h2>
               </div>
@@ -212,46 +190,43 @@ export default function TrainingModulePage() {
                     const showResult = showExplanation;
 
                     let buttonClass =
-                      'w-full text-left px-4 py-3 rounded-button border-2 transition-all font-medium ';
+                      'w-full text-left px-4 py-3 rounded-button border transition-all text-[14px] font-medium ';
                     
                     if (showResult) {
                       if (isCorrect) {
-                        buttonClass += 'border-flix-feedback-success bg-flix-feedback-success/10 text-flix-grayscale-100';
+                        buttonClass += 'border-flix-feedback-success bg-flix-feedback-success/5 text-flix-grayscale-100';
                       } else if (isSelected && !isCorrect) {
-                        buttonClass += 'border-flix-feedback-danger bg-flix-feedback-danger/10 text-flix-grayscale-100';
+                        buttonClass += 'border-flix-feedback-danger bg-flix-feedback-danger/5 text-flix-grayscale-100';
                       } else {
-                        buttonClass += 'border-flix-grayscale-30 bg-flix-grayscale-10 text-flix-grayscale-70';
+                        buttonClass += 'border-flix-grayscale-20 bg-flix-grayscale-10 text-flix-grayscale-70';
                       }
                     } else {
-                      buttonClass += 'border-flix-grayscale-30 bg-flix-background hover:border-flix-primary hover:bg-flix-primary/5 text-flix-grayscale-100';
+                      buttonClass += 'border-flix-grayscale-20 bg-flix-grayscale-10 hover:border-flix-primary/50 hover:bg-flix-primary/5 text-flix-grayscale-100';
                     }
 
                     return (
-                      <motion.button
+                      <button
                         key={index}
-                        whileHover={!showResult ? { scale: 1.02 } : {}}
-                        whileTap={!showResult ? { scale: 0.98 } : {}}
+                        type="button"
                         onClick={() => handleAnswerSelect(index)}
                         disabled={showResult}
-                        className={buttonClass}
+                        className={`${buttonClass} ${!showResult ? 'active:scale-[0.995]' : ''}`}
                       >
                         <div className="flex items-center gap-3">
                           {showResult && isCorrect && <Icon name="Check" size={20} className="text-flix-feedback-success" />}
                           {showResult && isSelected && !isCorrect && <Icon name="X" size={20} className="text-flix-feedback-danger" />}
                           <span>{option}</span>
                         </div>
-                      </motion.button>
+                      </button>
                     );
                   })}
 
                   {showExplanation && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`p-4 rounded-card ${
+                    <div
+                      className={`p-4 rounded-card animate-fade-in ${
                         selectedAnswer === lesson.correctAnswer
-                          ? 'bg-flix-feedback-success/10 border border-flix-feedback-success/20'
-                          : 'bg-flix-feedback-danger/10 border border-flix-feedback-danger/20'
+                          ? 'bg-flix-feedback-success/5 border border-flix-feedback-success/10'
+                          : 'bg-flix-feedback-danger/5 border border-flix-feedback-danger/10'
                       }`}
                     >
                       <div className="flex items-start gap-2 mb-2">
@@ -276,33 +251,30 @@ export default function TrainingModulePage() {
                           ? lesson.explanation
                           : lesson.incorrectExplanation || lesson.explanation}
                       </p>
-                    </motion.div>
+                    </div>
                   )}
                 </div>
               )}
             </div>
 
             {/* Next Button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
+              type="button"
               onClick={isQuiz ? handleQuizNext : handleNext}
               disabled={isQuiz && !showExplanation}
-              className={`w-full py-3 rounded-button font-semibold transition-colors ${
+              className={`w-full py-3 rounded-button font-medium transition-colors text-[14px] active:scale-[0.98] ${
                 isQuiz && !showExplanation
-                  ? 'bg-flix-grayscale-30 text-flix-grayscale-50 cursor-not-allowed'
+                  ? 'bg-flix-grayscale-20 text-flix-grayscale-50 cursor-not-allowed'
                   : 'bg-flix-primary text-white hover:bg-flix-ui-primary'
               }`}
             >
               {isLastLesson ? 'Complete Lesson' : 'Continue'}
-            </motion.button>
-          </motion.div>
-        </AnimatePresence>
+            </button>
+          </div>
 
-        {/* Module Info */}
-        <div className="text-center">
-          <p className="text-sm text-flix-grayscale-50">
-            {trainingModule.title} • {trainingModule.duration}
+        <div className="text-center mt-4">
+          <p className="text-[13px] text-flix-grayscale-50">
+            {trainingModule.title} · {trainingModule.duration}
           </p>
         </div>
       </main>

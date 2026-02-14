@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from 'next'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-plus-jakarta',
+})
 
 export const metadata: Metadata = {
   title: 'Flix SE - Employee Appreciation',
@@ -18,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={`antialiased ${plusJakarta.variable}`}>
+      <body className="font-sans">{children}</body>
     </html>
   )
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
@@ -12,12 +11,12 @@ export default function ChannelGuidePage() {
       <TopBar />
       
       <main className="max-w-md mx-auto px-4 py-6">
-        <div className="mb-6">
-          <Link href="/toolbox" className="text-flix-primary hover:underline text-sm mb-2 inline-block">
+        <div className="mb-8">
+          <Link href="/toolbox" className="text-[14px] font-medium text-flix-primary hover:text-flix-ui-primary transition-colors mb-2 inline-block">
             Back to Toolbox
           </Link>
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
-            <Icon name="Smartphone" size={32} className="text-flix-primary" />
+          <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight flex items-center gap-2">
+            <Icon name="Smartphone" size={28} className="text-flix-primary" />
             Channel Guide
           </h1>
           <p className="text-flix-grayscale-70">
@@ -25,15 +24,11 @@ export default function ChannelGuidePage() {
           </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-flix-background rounded-card p-6 border border-flix-grayscale-30"
-        >
+        <div className="bg-flix-background rounded-card p-6 border border-flix-grayscale-20 animate-fade-in">
           <p className="text-flix-grayscale-70">
             This feature will help you choose the best communication channel for showing appreciation based on the situation and recipient preferences.
           </p>
-        </motion.div>
+        </div>
       </main>
 
       <BottomNav />

@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-plus-jakarta)', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+      },
       colors: {
         flix: {
           primary: '#73D700',
@@ -20,12 +23,13 @@ const config: Config = {
           },
           grayscale: {
             0: '#FFFFFF',
-            10: '#F7F7F7',
-            30: '#E1E1E1',
-            50: '#C8C8C8',
-            70: '#646464',
-            90: '#444444',
-            100: '#353535',
+            10: '#FAFAFA',
+            20: '#F5F5F5',
+            30: '#E8E8E8',
+            50: '#A3A3A3',
+            70: '#737373',
+            90: '#404040',
+            100: '#262626',
           },
           feedback: {
             success: '#228F00',
@@ -36,8 +40,14 @@ const config: Config = {
         },
       },
       borderRadius: {
-        'card': '16px',
-        'button': '12px',
+        'card': '12px',
+        'button': '8px',
+        'pill': '9999px',
+      },
+      boxShadow: {
+        'soft': '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)',
+        'card': '0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)',
+        'card-hover': '0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 6px -2px rgb(0 0 0 / 0.04)',
       },
     },
   },

@@ -1,38 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
 import { AssessmentFeedback } from '@/lib/ai';
 
 const assessmentQuestions = [
-  {
-    id: 1,
-    question: 'How often do you show appreciation to colleagues?',
-    options: ['Daily', 'Weekly', 'Monthly', 'Rarely'],
-  },
-  {
-    id: 2,
-    question: 'What\'s your preferred way to show appreciation?',
-    options: ['Public recognition', 'Private messages', 'Written notes', 'Small gestures'],
-  },
-  {
-    id: 3,
-    question: 'When do you typically show appreciation?',
-    options: ['Immediately after achievement', 'During team meetings', 'In 1:1 conversations', 'When reminded'],
-  },
-  {
-    id: 4,
-    question: 'How do you feel about public recognition?',
-    options: ['Love it', 'It\'s okay', 'Prefer private', 'Uncomfortable'],
-  },
-  {
-    id: 5,
-    question: 'What motivates you to show appreciation?',
-    options: ['Genuine gratitude', 'Team culture', 'Company policy', 'Personal values'],
-  },
+  { id: 1, question: 'How often do you show appreciation to colleagues?', options: ['Daily', 'Weekly', 'Monthly', 'Rarely'] },
+  { id: 2, question: "What's your preferred way to show appreciation?", options: ['Public recognition', 'Private messages', 'Written notes', 'Small gestures'] },
+  { id: 3, question: 'When do you typically show appreciation?', options: ['Immediately after achievement', 'During team meetings', 'In 1:1 conversations', 'When reminded'] },
+  { id: 4, question: 'How do you feel about public recognition?', options: ['Love it', "It's okay", 'Prefer private', 'Uncomfortable'] },
+  { id: 5, question: 'What motivates you to show appreciation?', options: ['Genuine gratitude', 'Team culture', 'Company policy', 'Personal values'] },
 ];
 
 export default function AssessmentPage() {
@@ -44,7 +23,6 @@ export default function AssessmentPage() {
   const handleAnswer = (answer: string) => {
     const newResponses = { ...responses, [currentQuestion]: answer };
     setResponses(newResponses);
-
     if (currentQuestion < assessmentQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
@@ -58,20 +36,13 @@ export default function AssessmentPage() {
       const response = await fetch('/api/assessment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userResponses: finalResponses,
-        }),
+        body: JSON.stringify({ userResponses: finalResponses }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch feedback');
-      }
-
+      if (!response.ok) throw new Error('Failed to fetch feedback');
       const result = await response.json();
       setFeedback(result);
     } catch (error) {
       console.error('Error generating feedback:', error);
-      // Fallback feedback
       setFeedback({
         strengths: ['You show genuine appreciation', 'You recognize others regularly'],
         improvements: ['Consider personalizing your approach', 'Match your style to recipient preferences'],
@@ -93,12 +64,12 @@ export default function AssessmentPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+      <div className="min-h-screen bg-flix-grayscale-10 pb-24">
         <TopBar />
-        <main className="max-w-md mx-auto px-4 py-6">
+        <main className="max-w-lg mx-auto px-5 py-8">
           <div className="flex flex-col items-center justify-center min-h-[60vh]">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-flix-primary mb-4"></div>
-            <p className="text-flix-grayscale-70">Analyzing your appreciation style...</p>
+            <div className="w-10 h-10 border-2 border-flix-grayscale-30 border-t-flix-primary rounded-full animate-spin mb-4" />
+            <p className="text-[14px] text-flix-grayscale-70">Analyzing your appreciation style...</p>
           </div>
         </main>
         <BottomNav />
@@ -108,106 +79,55 @@ export default function AssessmentPage() {
 
   if (feedback) {
     return (
-      <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+      <div className="min-h-screen bg-flix-grayscale-10 pb-24">
         <TopBar />
-        <main className="max-w-md mx-auto px-4 py-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
-              <Icon name="Bot" size={32} className="text-flix-primary" />
-              Your Assessment Results
-            </h1>
-            <p className="text-flix-grayscale-70 mb-6">
-              Personalized insights about your appreciation style
-            </p>
+        <main className="max-w-lg mx-auto px-5 py-8">
+          <div className="animate-fade-in">
+            <p className="text-sm font-medium text-flix-primary mb-1">Assessment</p>
+            <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">Your Results</h1>
+            <p className="text-[15px] text-flix-grayscale-70 mb-8">Personalized insights about your appreciation style</p>
 
             <div className="space-y-4">
-              {/* Strengths */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-flix-feedback-success/10 rounded-card border border-flix-feedback-success/20"
-              >
-                <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <Icon name="Sparkles" size={20} className="text-flix-feedback-success" />
-                  Your Strengths
-                </h3>
-                <ul className="space-y-2">
-                  {feedback.strengths.map((strength, idx) => (
-                    <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
-                      <span className="text-flix-feedback-success">•</span>
-                      <span>{strength}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
+              {[
+                { title: 'Your Strengths', icon: 'Sparkles' as const, items: feedback.strengths, iconClass: 'text-flix-feedback-success', bg: 'bg-flix-feedback-success/5', border: 'border-flix-feedback-success/10' },
+                { title: 'Areas for Growth', icon: 'ArrowUpRight' as const, items: feedback.improvements, iconClass: 'text-flix-feedback-warning', bg: 'bg-flix-feedback-warning/5', border: 'border-flix-feedback-warning/10' },
+                { title: 'Suggestions', icon: 'Lightbulb' as const, items: feedback.suggestions, iconClass: 'text-flix-primary', bg: 'bg-flix-background', border: 'border-flix-grayscale-20' },
+              ].map((section) => (
+                <div
+                  key={section.title}
+                  className={`p-4 rounded-card shadow-card border animate-fade-in ${section.bg} ${section.border}`}
+                >
+                  <h3 className="text-sm font-semibold text-flix-grayscale-100 mb-3 flex items-center gap-2">
+                    <Icon name={section.icon} size={16} className={section.iconClass} />
+                    {section.title}
+                  </h3>
+                  <ul className="space-y-1.5">
+                    {section.items.map((item, idx) => (
+                      <li key={idx} className="text-[14px] text-flix-grayscale-90 flex items-start gap-2">
+                        <span className="text-flix-grayscale-50 mt-0.5">—</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
 
-              {/* Areas for Improvement */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="p-4 bg-flix-feedback-warning/10 rounded-card border border-flix-feedback-warning/20"
-              >
-                <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <Icon name="ArrowUpRight" size={20} className="text-flix-feedback-warning" />
-                  Areas for Growth
-                </h3>
-                <ul className="space-y-2">
-                  {feedback.improvements.map((improvement, idx) => (
-                    <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
-                      <span className="text-flix-feedback-warning">•</span>
-                      <span>{improvement}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              {/* Suggestions */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="p-4 bg-flix-background rounded-card border border-flix-grayscale-30"
-              >
-                <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <Icon name="Lightbulb" size={20} className="text-flix-primary" />
-                  Suggestions
-                </h3>
-                <ul className="space-y-2">
-                  {feedback.suggestions.map((suggestion, idx) => (
-                    <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
-                      <span className="text-flix-primary">•</span>
-                      <span>{suggestion}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              {/* Alignment */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
-              >
-                <h3 className="font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
-                  <Icon name="Target" size={20} className="text-flix-primary" />
+              <div className="p-4 rounded-card bg-flix-primary/5 border border-flix-primary/10 animate-fade-in">
+                <h3 className="text-sm font-semibold text-flix-grayscale-100 mb-2 flex items-center gap-2">
+                  <Icon name="Target" size={16} className="text-flix-primary" />
                   Style Alignment
                 </h3>
-                <p className="text-sm text-flix-grayscale-90">{feedback.alignment}</p>
-              </motion.div>
+                <p className="text-[14px] text-flix-grayscale-90 leading-relaxed">{feedback.alignment}</p>
+              </div>
 
               <button
                 onClick={resetAssessment}
-                className="w-full py-3 bg-flix-primary text-white rounded-button font-semibold hover:bg-flix-ui-primary transition-colors"
+                className="w-full py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors text-[14px]"
               >
                 Retake Assessment
               </button>
             </div>
-          </motion.div>
+          </div>
         </main>
         <BottomNav />
       </div>
@@ -217,68 +137,51 @@ export default function AssessmentPage() {
   const question = assessmentQuestions[currentQuestion];
 
   return (
-    <div className="min-h-screen bg-flix-grayscale-10 pb-20">
+    <div className="min-h-screen bg-flix-grayscale-10 pb-24">
       <TopBar />
-      
-      <main className="max-w-md mx-auto px-4 py-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <h1 className="text-3xl font-bold text-flix-grayscale-100 flex items-center gap-2">
-                <Icon name="Bot" size={32} className="text-flix-primary" />
-                Self Assessment (Giving Appreciation)
-              </h1>
-              <span className="text-sm text-flix-grayscale-70">
-                {currentQuestion + 1}/{assessmentQuestions.length}
-              </span>
+      <main className="max-w-lg mx-auto px-5 py-8">
+        <div className="animate-fade-in">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="text-sm font-medium text-flix-primary mb-0.5">Assessment</p>
+              <h1 className="text-xl font-semibold text-flix-grayscale-100 tracking-tight">Self Assessment</h1>
             </div>
-            <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden mb-4">
-              <motion.div
-                className="h-full bg-flix-primary rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
+            <span className="text-[13px] text-flix-grayscale-50 font-medium">
+              {currentQuestion + 1}/{assessmentQuestions.length}
+            </span>
+          </div>
+          <div className="h-1 bg-flix-grayscale-20 rounded-pill overflow-hidden mb-8">
+            <div
+              className="h-full bg-flix-primary rounded-pill transition-[width] duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
           </div>
 
-          <motion.div
+          <div
             key={currentQuestion}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="bg-flix-background rounded-card p-6 border border-flix-grayscale-30 shadow-sm mb-6"
+            className="bg-flix-background rounded-card p-5 shadow-card border border-flix-grayscale-20 mb-6 animate-fade-in"
           >
-            <h2 className="text-xl font-bold text-flix-grayscale-100 mb-6">
+            <h2 className="text-[16px] font-medium text-flix-grayscale-100 mb-5 leading-snug">
               {question.question}
             </h2>
-            
-            <div className="space-y-3">
+            <div className="space-y-2">
               {question.options.map((option, idx) => (
-                <motion.button
+                <button
                   key={idx}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  type="button"
                   onClick={() => handleAnswer(option)}
-                  className="w-full text-left px-4 py-3 rounded-button border-2 border-flix-grayscale-30 bg-flix-background hover:border-flix-primary hover:bg-flix-primary/5 transition-colors"
+                  className="w-full text-left px-4 py-3 rounded-button bg-flix-grayscale-10 hover:bg-flix-grayscale-20 border border-transparent hover:border-flix-grayscale-30 transition-all text-[14px] font-medium text-flix-grayscale-100 active:scale-[0.99]"
                 >
-                  <span className="text-flix-grayscale-100 font-medium">{option}</span>
-                </motion.button>
+                  {option}
+                </button>
               ))}
             </div>
-          </motion.div>
-
-          <div className="text-center text-sm text-flix-grayscale-50">
-            Answer honestly for the best insights
           </div>
-        </motion.div>
-      </main>
 
+          <p className="text-center text-[13px] text-flix-grayscale-50">Answer honestly for the best insights</p>
+        </div>
+      </main>
       <BottomNav />
     </div>
   );
 }
-
