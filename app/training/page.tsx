@@ -38,10 +38,10 @@ export default function TrainingPage() {
           transition={{ duration: 0.3 }}
         >
           <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2">
-            🎓 Appreciation Training
+            ✨ Level Up Your Appreciation
           </h1>
           <p className="text-flix-grayscale-70 mb-6">
-            Build your appreciation skills with interactive lessons
+            Master the art of appreciation with fun, bite-sized lessons
           </p>
 
           <div className="space-y-4">
@@ -98,7 +98,7 @@ export default function TrainingPage() {
             className="mt-8 p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
           >
             <p className="text-sm text-flix-grayscale-90">
-              <span className="font-semibold">💡 Tip:</span> Complete all modules to unlock advanced appreciation tools!
+              <span className="font-semibold">💡 Tip:</span> Complete all lessons to unlock advanced appreciation tools!
             </p>
           </motion.div>
         </motion.div>

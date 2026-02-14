@@ -134,7 +134,7 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-flix-grayscale-70">Training Completed</span>
+                      <span className="text-sm text-flix-grayscale-70">Lessons Completed</span>
                       <span className="text-sm font-semibold text-flix-grayscale-100">0/4</span>
                     </div>
                     <div className="h-2 bg-flix-grayscale-30 rounded-full overflow-hidden">

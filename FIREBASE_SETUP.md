@@ -59,8 +59,8 @@ In Firebase Console, go to Firestore Database > Rules and update them:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read/write access to quiz results
-    match /quizResults/{document=**} {
+    // Quiz responses stored in separate collection
+    match /appreciationQuizResponses/{document=**} {
       allow read, write: if true; // For development - restrict in production
     }
     
@@ -88,20 +88,19 @@ service cloud.firestore {
 
 ## Data Structure
 
-### Quiz Results Collection (`quizResults`)
-Each document contains:
+### Quiz Responses Collection (`appreciationQuizResponses`) — separate collection
+Quiz data is stored in its own collection, separate from users:
 - `userId`: User identifier (or "anonymous")
 - `primaryArchetype`: Primary appreciation archetype
 - `secondaryPreferences`: Array of secondary archetypes
 - `visibility`: Visibility preference ('public', 'team', 'private')
 - `completedAt`: Timestamp of completion
-- `openEndedResponses`: Optional object with open-ended answers
-- `skippedQuestions`: Optional array of skipped question indices
+- `questionResponses`: Array of question/answer data (supports multi-select)
+- `multiSelectEnabled`: Boolean indicating multi-select quiz format
 
 ### Users Collection (`users`)
-Each document contains:
+Each document contains only preferences (quiz data lives in appreciationQuizResponses):
 - `preferences`: User preferences object
-- `quizResults`: Latest quiz result
 - `lastUpdated`: Timestamp of last update
 
 ## Troubleshooting

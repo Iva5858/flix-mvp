@@ -72,7 +72,7 @@ async function main() {
   const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   const db = getFirestore(app);
 
-  const snapshot = await getDocs(collection(db, 'quizResults'));
+  const snapshot = await getDocs(collection(db, 'appreciationQuizResponses'));
   const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 
   console.log(`Found ${docs.length} quiz result(s).`);

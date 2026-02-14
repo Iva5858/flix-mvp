@@ -37,9 +37,9 @@ export default function TrainingModulePage() {
       <div className="min-h-screen bg-flix-grayscale-10 pb-20">
         <TopBar />
         <main className="max-w-md mx-auto px-4 py-6">
-          <p className="text-flix-grayscale-70">Module not found</p>
+          <p className="text-flix-grayscale-70">Lesson not found</p>
           <Link href="/training" className="text-flix-primary hover:underline">
-            ← Back to Training
+            ← Back to Lessons
           </Link>
         </main>
         <BottomNav />
@@ -67,7 +67,7 @@ export default function TrainingModulePage() {
               🎉
             </motion.div>
             <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-4">
-              Module Complete!
+              You crushed it! 🎉
             </h1>
             <p className="text-flix-grayscale-70 mb-8">
               You&apos;ve completed &quot;{trainingModule.title}&quot;
@@ -79,7 +79,7 @@ export default function TrainingModulePage() {
                   whileTap={{ scale: 0.95 }}
                   className="w-full py-3 bg-flix-primary text-white rounded-button font-semibold hover:bg-flix-ui-primary transition-colors"
                 >
-                  Back to Training
+                  Back to Lessons
                 </motion.button>
               </Link>
               {moduleId < trainingModules.length && (
@@ -89,7 +89,7 @@ export default function TrainingModulePage() {
                     whileTap={{ scale: 0.95 }}
                     className="w-full py-3 bg-flix-background border-2 border-flix-primary text-flix-primary rounded-button font-semibold hover:bg-flix-primary/5 transition-colors"
                   >
-                    Next Module →
+                    Next Lesson →
                   </motion.button>
                 </Link>
               )}
@@ -289,7 +289,7 @@ export default function TrainingModulePage() {
                   : 'bg-flix-primary text-white hover:bg-flix-ui-primary'
               }`}
             >
-              {isLastLesson ? 'Complete Module 🎉' : 'Continue →'}
+              {isLastLesson ? 'Complete Lesson 🎉' : 'Continue →'}
             </motion.button>
           </motion.div>
         </AnimatePresence>

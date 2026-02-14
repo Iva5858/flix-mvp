@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 const navItems = [
-  { href: '/training', emoji: '🎓', label: 'Training' },
+  { href: '/training', emoji: '✨', label: 'Learn' },
   { href: '/toolbox', emoji: '🧰', label: 'Toolbox' },
   { href: '/assessment', emoji: '🤖', label: 'Assessment' },
 ];

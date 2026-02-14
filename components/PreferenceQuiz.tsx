@@ -173,7 +173,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
   }, []);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, ArchetypeId>>({});
+  const [answers, setAnswers] = useState<Record<number, ArchetypeId[]>>({});
   const [openEndedResponses, setOpenEndedResponses] = useState<Record<number, string>>({});
   const [skippedQuestions, setSkippedQuestions] = useState<Set<number>>(new Set());
   const [selectedArchetypes, setSelectedArchetypes] = useState<Set<ArchetypeId>>(
@@ -187,25 +187,20 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const handleAnswer = (archetypeId: ArchetypeId) => {
-    const newAnswers = { ...answers, [currentQuestion]: archetypeId };
+  const toggleAnswer = (archetypeId: ArchetypeId) => {
+    const currentSelections = answers[currentQuestion] || [];
+    const isSelected = currentSelections.includes(archetypeId);
+    const newSelections = isSelected
+      ? currentSelections.filter((id) => id !== archetypeId)
+      : [...currentSelections, archetypeId];
+    const newAnswers = { ...answers, [currentQuestion]: newSelections };
     setAnswers(newAnswers);
-    setSelectedArchetypes(prev => new Set([...prev, archetypeId]));
+    setSelectedArchetypes((prev) => new Set([...prev, ...newSelections]));
     setShowOpenEndedInput(false);
     setOpenEndedText('');
-
-    if (currentQuestion < randomizedQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      calculateResult(newAnswers);
-    }
   };
 
-  const handleSkip = () => {
-    setSkippedQuestions(prev => new Set([...prev, currentQuestion]));
-    setShowOpenEndedInput(false);
-    setOpenEndedText('');
-
+  const handleNext = () => {
     if (currentQuestion < randomizedQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
@@ -213,9 +208,24 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     }
   };
 
+  const handleSkip = () => {
+    setSkippedQuestions((prev) => new Set([...prev, currentQuestion]));
+    const updatedAnswers = { ...answers, [currentQuestion]: [] };
+    setAnswers(updatedAnswers);
+    setShowOpenEndedInput(false);
+    setOpenEndedText('');
+
+    if (currentQuestion < randomizedQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      calculateResult(updatedAnswers);
+    }
+  };
+
   const handleOpenEndedSubmit = () => {
     if (openEndedText.trim()) {
-      setOpenEndedResponses(prev => ({ ...prev, [currentQuestion]: openEndedText.trim() }));
+      setOpenEndedResponses((prev) => ({ ...prev, [currentQuestion]: openEndedText.trim() }));
+      setAnswers((prev) => ({ ...prev, [currentQuestion]: [] }));
       setShowOpenEndedInput(false);
       setOpenEndedText('');
 
@@ -227,8 +237,8 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     }
   };
 
-  const calculateResult = (finalAnswers: Record<number, ArchetypeId>) => {
-    // Count occurrences of each archetype
+  const calculateResult = (finalAnswers: Record<number, ArchetypeId[]>) => {
+    // Count occurrences of each archetype (each selection counts)
     const counts: Record<ArchetypeId, number> = {
       'spotlight-seeker': 0,
       'quiet-achiever': 0,
@@ -237,10 +247,10 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
       'growth-chaser': 0,
     };
 
-    Object.values(finalAnswers).forEach(archetype => {
-      if (archetype) {
+    Object.values(finalAnswers).forEach((archetypes) => {
+      (archetypes || []).forEach((archetype) => {
         counts[archetype]++;
-      }
+      });
     });
 
     // Find primary archetype (most common)
@@ -274,18 +284,26 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
   const buildQuestionResponses = (): QuestionResponse[] => {
     const responses: QuestionResponse[] = [];
-    
+
     randomizedQuestions.forEach((question, index) => {
-      // Check if this question was answered with an archetype
-      if (answers[index] !== undefined) {
-        const selectedOption = question.options.find(opt => opt.archetype === answers[index]);
-        const archetypeName = archetypes[answers[index]]?.name || answers[index];
+      const selectedArchetypes = answers[index];
+      // Check if this question was answered with archetype(s)
+      if (selectedArchetypes !== undefined && selectedArchetypes.length > 0) {
+        const archetypeNames = selectedArchetypes.map(
+          (id) => archetypes[id]?.name || id
+        );
+        const answerTexts = selectedArchetypes.map((id) => {
+          const opt = question.options.find((o) => o.archetype === id);
+          return opt?.text || '';
+        });
         responses.push({
           questionId: question.id,
           questionText: question.question,
           answerType: 'archetype',
-          archetypeAnswer: archetypeName, // Save archetype name instead of ID
-          answerText: selectedOption?.text,
+          archetypeAnswers: archetypeNames,
+          answerTexts,
+          archetypeAnswer: archetypeNames[0],
+          answerText: answerTexts[0],
         });
       }
       // Check if this question was answered with open-ended text
@@ -355,7 +373,9 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
   const question = randomizedQuestions[currentQuestion];
   const progress = ((currentQuestion + 1) / randomizedQuestions.length) * 100;
-  const hasAnswer = answers[currentQuestion] !== undefined || openEndedResponses[currentQuestion] !== undefined;
+  const currentSelections = answers[currentQuestion] || [];
+  const hasAnswer =
+    currentSelections.length > 0 || openEndedResponses[currentQuestion] !== undefined;
 
   // Show results screen
   if (quizComplete && result) {
@@ -537,21 +557,41 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
         {!showOpenEndedInput ? (
           <>
+            <p className="text-sm text-flix-grayscale-70 mb-3">
+              Select all that apply
+            </p>
             <div className="space-y-3 mb-4">
               {question.options.map((option) => {
-                const archetype = archetypes[option.archetype];
+                const isSelected = currentSelections.includes(option.archetype);
                 return (
                   <motion.div
                     key={option.archetype}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => handleAnswer(option.archetype)}
+                    onClick={() => toggleAnswer(option.archetype)}
                     className="cursor-pointer"
                   >
-                    <div className="p-4 rounded-card border-2 border-flix-grayscale-30 bg-flix-background hover:border-flix-primary transition-colors">
-                      <div className="flex items-center gap-3">
-                        <span className="text-flix-grayscale-100 font-medium">{option.text}</span>
+                    <div
+                      className={`p-4 rounded-card border-2 transition-colors flex items-center gap-3 ${
+                        isSelected
+                          ? 'border-flix-primary bg-flix-primary/10'
+                          : 'border-flix-grayscale-30 bg-flix-background hover:border-flix-primary/50'
+                      }`}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
+                          isSelected
+                            ? 'border-flix-primary bg-flix-primary'
+                            : 'border-flix-grayscale-50'
+                        }`}
+                      >
+                        {isSelected && (
+                          <span className="text-white text-sm font-bold">✓</span>
+                        )}
                       </div>
+                      <span className="text-flix-grayscale-100 font-medium">
+                        {option.text}
+                      </span>
                     </div>
                   </motion.div>
                 );
@@ -578,22 +618,15 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   Skip
                 </motion.button>
 
-                {hasAnswer && (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      if (currentQuestion < randomizedQuestions.length - 1) {
-                        setCurrentQuestion(currentQuestion + 1);
-                      } else {
-                        calculateResult(answers);
-                      }
-                    }}
-                    className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors"
-                  >
-                    Next →
-                  </motion.button>
-                )}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleNext}
+                  disabled={!hasAnswer}
+                  className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next →
+                </motion.button>
               </div>
             </div>
           </>

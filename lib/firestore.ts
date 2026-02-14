@@ -6,7 +6,6 @@ import {
   doc, 
   setDoc, 
   getDoc, 
-  updateDoc,
   serverTimestamp,
   query,
   where,
@@ -21,9 +20,15 @@ export interface QuestionResponse {
   questionId: number;
   questionText: string;
   answerType: 'archetype' | 'open-ended' | 'skipped';
+  /** Single archetype (legacy, for backward compatibility) */
   archetypeAnswer?: string;
+  /** Multiple archetype names when user selects multiple options */
+  archetypeAnswers?: string[];
   openEndedAnswer?: string;
-  answerText?: string; // The text of the selected option (for archetype answers)
+  /** Single option text (legacy) */
+  answerText?: string;
+  /** Multiple option texts when user selects multiple options */
+  answerTexts?: string[];
 }
 
 export interface QuizResult {
@@ -39,7 +44,6 @@ export interface QuizResult {
 
 export interface UserQuizData {
   preferences: UserPreferences;
-  quizResults: QuizResult;
   lastUpdated: Timestamp | FieldValue;
 }
 
@@ -74,13 +78,16 @@ export async function saveQuizResults(
       questionResponses,
     };
 
-    // Save to quiz results collection
-    const quizResultsRef = collection(db, 'quizResults');
-    const docRef = await addDoc(quizResultsRef, quizResult);
+    // Save to dedicated collection: appreciationQuizResponses (separate from users)
+    const quizResponsesRef = collection(db, 'appreciationQuizResponses');
+    const docRef = await addDoc(quizResponsesRef, {
+      ...quizResult,
+      multiSelectEnabled: true,
+    });
 
-    // If userId is provided, also save/update user preferences
+    // If userId is provided, also save/update user preferences (users collection)
     if (userId && userId !== 'anonymous') {
-      await saveUserPreferences(userId, preferences, questionResponses);
+      await saveUserPreferences(userId, preferences);
     }
 
     return docRef.id;
@@ -97,29 +104,16 @@ export async function saveQuizResults(
  */
 export async function saveUserPreferences(
   userId: string,
-  preferences: UserPreferences,
-  questionResponses?: QuestionResponse[]
+  preferences: UserPreferences
 ): Promise<void> {
   try {
     if (!db) {
       throw new Error('Firebase is not initialized. Please check your environment variables and restart the development server.');
     }
 
-    // Import archetypes to get names
-    const { archetypes } = await import('./archetypes');
-
     const userRef = doc(db, 'users', userId);
     const userData: UserQuizData = {
       preferences,
-      quizResults: {
-        primaryArchetype: archetypes[preferences.primaryArchetype]?.name || preferences.primaryArchetype,
-        secondaryPreferences: preferences.secondaryPreferences.map(
-          id => archetypes[id]?.name || id
-        ),
-        visibility: preferences.visibility,
-        completedAt: serverTimestamp() as Timestamp,
-        questionResponses: questionResponses || [],
-      },
       lastUpdated: serverTimestamp() as Timestamp,
     };
 
@@ -157,7 +151,7 @@ export async function getUserPreferences(userId: string): Promise<UserPreference
 }
 
 /**
- * Get quiz results for a user
+ * Get quiz results for a user from the appreciationQuizResponses collection
  * @param userId - User ID
  * @returns Array of quiz results
  */
@@ -167,11 +161,11 @@ export async function getUserQuizResults(userId: string): Promise<QuizResult[]> 
       throw new Error('Firebase is not initialized. Please check your environment variables and restart the development server.');
     }
 
-    const quizResultsRef = collection(db, 'quizResults');
-    const q = query(quizResultsRef, where('userId', '==', userId));
+    const quizResponsesRef = collection(db, 'appreciationQuizResponses');
+    const q = query(quizResponsesRef, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
 
-    return querySnapshot.docs.map(doc => doc.data() as QuizResult);
+    return querySnapshot.docs.map((d) => d.data() as QuizResult);
   } catch (error) {
     console.error('Error getting quiz results:', error);
     throw error;
