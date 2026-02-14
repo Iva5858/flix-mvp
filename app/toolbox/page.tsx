@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
+import { Icon } from '@/lib/icons';
 
 const toolboxTools = [
   {
     id: 'appreciate-colleague',
     title: 'Appreciate a Colleague',
     description: 'Get personalized tips for appreciating someone',
-    emoji: '💝',
+    icon: 'Heart',
     color: 'bg-flix-primary',
     href: '/toolbox/appreciate-colleague',
   },
@@ -18,7 +19,7 @@ const toolboxTools = [
     id: 'phrase-generator',
     title: 'Phrase Generator',
     description: 'Generate appreciation messages',
-    emoji: '✨',
+    icon: 'Sparkles',
     color: 'bg-flix-secondary',
     href: '/toolbox/phrase-generator',
   },
@@ -26,7 +27,7 @@ const toolboxTools = [
     id: 'channel-guide',
     title: 'Channel Guide',
     description: 'Choose the best way to show appreciation',
-    emoji: '📱',
+    icon: 'Smartphone',
     color: 'bg-flix-feedback-info',
     href: '/toolbox/channel-guide',
   },
@@ -34,7 +35,7 @@ const toolboxTools = [
     id: 'timing-tips',
     title: 'Timing Tips',
     description: 'Learn when to show appreciation',
-    emoji: '⏰',
+    icon: 'Clock',
     color: 'bg-flix-feedback-success',
     href: '/toolbox/timing-tips',
   },
@@ -51,8 +52,9 @@ export default function ToolboxPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2">
-            🧰 Quick Reference Toolbox
+          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
+            <Icon name="Wrench" size={32} className="text-flix-primary" />
+            Quick Reference Toolbox
           </h1>
           <p className="text-flix-grayscale-70 mb-6">
             Instant tools to help you show appreciation effectively
@@ -71,14 +73,14 @@ export default function ToolboxPage() {
                 <Link href={tool.href}>
                   <div className="bg-flix-background rounded-card p-5 border border-flix-grayscale-30 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-4">
-                      <div className={`${tool.color} w-16 h-16 rounded-card flex items-center justify-center text-3xl flex-shrink-0`}>
-                        {tool.emoji}
+                      <div className={`${tool.color} w-16 h-16 rounded-card flex items-center justify-center flex-shrink-0`}>
+                        <Icon name={tool.icon} size={32} className="text-white" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold text-flix-grayscale-100 mb-1">{tool.title}</h3>
                         <p className="text-sm text-flix-grayscale-70">{tool.description}</p>
                       </div>
-                      <div className="text-flix-grayscale-50">→</div>
+                      <Icon name="ChevronRight" size={20} className="text-flix-grayscale-50" />
                     </div>
                   </div>
                 </Link>
@@ -93,7 +95,7 @@ export default function ToolboxPage() {
             className="mt-8 p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
           >
             <p className="text-sm text-flix-grayscale-90">
-              <span className="font-semibold">💡 Pro Tip:</span> Use &quot;Appreciate a Colleague&quot; to get personalized guidance based on their preferences!
+              <span className="font-semibold inline-flex items-center gap-1"><Icon name="Lightbulb" size={16} /> Pro Tip:</span> Use &quot;Appreciate a Colleague&quot; to get personalized guidance based on their preferences!
             </p>
           </motion.div>
         </motion.div>

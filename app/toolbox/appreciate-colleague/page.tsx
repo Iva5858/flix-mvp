@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
+import { Icon } from '@/lib/icons';
 import ColleagueSelector from '@/components/ColleagueSelector';
 import AppreciationTips from '@/components/AppreciationTips';
 import { User } from '@/lib/archetypes';
@@ -38,8 +39,9 @@ export default function AppreciateColleaguePage() {
           <Link href="/toolbox" className="text-flix-primary hover:underline text-sm mb-2 inline-block">
             ← Back to Toolbox
           </Link>
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2">
-            💝 Appreciate a Colleague
+          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
+            <Icon name="Heart" size={32} className="text-flix-primary" />
+            Appreciate a Colleague
           </h1>
           <p className="text-flix-grayscale-70">
             Get personalized tips for showing appreciation

@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
-import { trainingModules, LessonSlide } from '@/lib/training';
+import { Icon } from '@/lib/icons';
+import { trainingModules } from '@/lib/training';
 
 export default function TrainingModulePage() {
   const params = useParams();
@@ -62,12 +63,12 @@ export default function TrainingModulePage() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 200 }}
-              className="text-8xl mb-6"
+              className="mb-6 flex justify-center"
             >
-              🎉
+              <Icon name="PartyPopper" size={80} className="text-flix-primary" />
             </motion.div>
             <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-4">
-              You crushed it! 🎉
+              You crushed it!
             </h1>
             <p className="text-flix-grayscale-70 mb-8">
               You&apos;ve completed &quot;{trainingModule.title}&quot;
@@ -174,7 +175,11 @@ export default function TrainingModulePage() {
           >
             {/* Lesson Header */}
             <div className="flex items-start gap-4 mb-4">
-              {lesson.emoji && <span className="text-5xl">{lesson.emoji}</span>}
+              {lesson.icon && (
+                <div className="flex-shrink-0">
+                  <Icon name={lesson.icon} size={40} className="text-flix-primary" />
+                </div>
+              )}
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-flix-grayscale-100 mb-2">
                   {lesson.title}
@@ -231,8 +236,8 @@ export default function TrainingModulePage() {
                         className={buttonClass}
                       >
                         <div className="flex items-center gap-3">
-                          {showResult && isCorrect && <span>✓</span>}
-                          {showResult && isSelected && !isCorrect && <span>✗</span>}
+                          {showResult && isCorrect && <Icon name="Check" size={20} className="text-flix-feedback-success" />}
+                          {showResult && isSelected && !isCorrect && <Icon name="X" size={20} className="text-flix-feedback-danger" />}
                           <span>{option}</span>
                         </div>
                       </motion.button>
@@ -252,14 +257,14 @@ export default function TrainingModulePage() {
                       <div className="flex items-start gap-2 mb-2">
                         {selectedAnswer === lesson.correctAnswer ? (
                           <>
-                            <span className="text-lg">✓</span>
+                            <Icon name="Check" size={20} className="text-flix-feedback-success flex-shrink-0" />
                             <p className="text-sm font-semibold text-flix-feedback-success">
                               Correct!
                             </p>
                           </>
                         ) : (
                           <>
-                            <span className="text-lg">✗</span>
+                            <Icon name="X" size={20} className="text-flix-feedback-danger flex-shrink-0" />
                             <p className="text-sm font-semibold text-flix-feedback-danger">
                               Not quite right
                             </p>
@@ -289,7 +294,7 @@ export default function TrainingModulePage() {
                   : 'bg-flix-primary text-white hover:bg-flix-ui-primary'
               }`}
             >
-              {isLastLesson ? 'Complete Lesson 🎉' : 'Continue →'}
+              {isLastLesson ? 'Complete Lesson' : 'Continue'}
             </motion.button>
           </motion.div>
         </AnimatePresence>

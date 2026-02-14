@@ -8,6 +8,7 @@ import BottomNav from '@/components/BottomNav';
 import PreferenceQuiz from '@/components/PreferenceQuiz';
 import ArchetypeCard from '@/components/ArchetypeCard';
 import { UserPreferences, archetypes, ArchetypeId } from '@/lib/archetypes';
+import { Icon } from '@/lib/icons';
 
 // Mock user data - in production, this would come from a database/auth
 const mockUser = {
@@ -44,8 +45,9 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-6">
-            👤 Profile & Preferences
+          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-6 flex items-center gap-2">
+            <Icon name="User" size={32} className="text-flix-primary" />
+            Profile & Preferences
           </h1>
 
           {showQuiz ? (

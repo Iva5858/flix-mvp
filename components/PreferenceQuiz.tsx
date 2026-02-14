@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArchetypeId, archetypes, UserPreferences } from '@/lib/archetypes';
+import { Icon } from '@/lib/icons';
 import ArchetypeCard from './ArchetypeCard';
 import { saveQuizResults, QuestionResponse } from '@/lib/firestore';
 import { getOrCreateUserId } from '@/lib/userId';
@@ -433,7 +434,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   onClick={() => setSelectedArchetypeForDetails(null)}
                   className="text-sm text-flix-grayscale-70 hover:text-flix-grayscale-100"
                 >
-                  ✕
+                  <Icon name="X" size={20} />
                 </button>
               </div>
               
@@ -465,7 +466,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   <ul className="space-y-1">
                     {detailArchetype.do.map((item, idx) => (
                       <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
-                        <span className="text-flix-feedback-success">✓</span>
+                        <Icon name="Check" size={16} className="text-flix-feedback-success flex-shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -479,7 +480,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   <ul className="space-y-1">
                     {detailArchetype.dont.map((item, idx) => (
                       <li key={idx} className="text-sm text-flix-grayscale-90 flex items-start gap-2">
-                        <span className="text-flix-feedback-danger">✗</span>
+                        <Icon name="X" size={16} className="text-flix-feedback-danger flex-shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -586,7 +587,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                         }`}
                       >
                         {isSelected && (
-                          <span className="text-white text-sm font-bold">✓</span>
+                          <Icon name="Check" size={14} className="text-white" />
                         )}
                       </div>
                       <span className="text-flix-grayscale-100 font-medium">
@@ -625,7 +626,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   disabled={!hasAnswer}
                   className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next →
+                  Next
                 </motion.button>
               </div>
             </div>

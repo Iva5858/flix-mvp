@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Icon } from '@/lib/icons';
 import { User, mockUsers } from '@/lib/archetypes';
 
 interface ColleagueSelectorProps {
@@ -29,7 +30,9 @@ export default function ColleagueSelector({ onSelect, selectedUserId }: Colleagu
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-4 py-3 rounded-button border border-flix-grayscale-30 bg-flix-background text-flix-grayscale-100 placeholder-flix-grayscale-50 focus:outline-none focus:border-flix-primary"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-flix-grayscale-50">🔍</span>
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-flix-grayscale-50">
+          <Icon name="Search" size={20} />
+        </span>
       </div>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -61,7 +64,7 @@ export default function ColleagueSelector({ onSelect, selectedUserId }: Colleagu
                   <p className="text-xs text-flix-grayscale-50">{user.department}</p>
                 </div>
                 {selectedUserId === user.id && (
-                  <div className="text-flix-primary text-xl">✓</div>
+                  <Icon name="Check" size={24} className="text-flix-primary" />
                 )}
               </div>
             </motion.div>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
+import { Icon } from '@/lib/icons';
 import { trainingModules } from '@/lib/training';
 
 export default function TrainingPage() {
@@ -37,8 +38,9 @@ export default function TrainingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2">
-            ✨ Level Up Your Appreciation
+          <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
+            <Icon name="Sparkles" size={32} className="text-flix-primary" />
+            Level Up Your Appreciation
           </h1>
           <p className="text-flix-grayscale-70 mb-6">
             Master the art of appreciation with fun, bite-sized lessons
@@ -56,7 +58,9 @@ export default function TrainingPage() {
                   className="bg-flix-background rounded-card p-4 border border-flix-grayscale-30 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="text-4xl">{module.emoji}</div>
+                    <div className="flex-shrink-0">
+                      <Icon name={module.icon} size={40} className="text-flix-primary" />
+                    </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="font-bold text-flix-grayscale-100">{module.title}</h3>
@@ -78,7 +82,7 @@ export default function TrainingPage() {
                         </div>
                         <span className="text-xs text-flix-grayscale-50">
                           {moduleProgress[module.id]?.completed ? (
-                            <span className="text-flix-feedback-success">✓</span>
+                            <Icon name="Check" size={14} className="text-flix-feedback-success" />
                           ) : (
                             `${moduleProgress[module.id]?.progress || 0}%`
                           )}
@@ -98,7 +102,7 @@ export default function TrainingPage() {
             className="mt-8 p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
           >
             <p className="text-sm text-flix-grayscale-90">
-              <span className="font-semibold">💡 Tip:</span> Complete all lessons to unlock advanced appreciation tools!
+              <span className="font-semibold inline-flex items-center gap-1"><Icon name="Lightbulb" size={16} /> Tip:</span> Complete all lessons to unlock advanced appreciation tools!
             </p>
           </motion.div>
         </motion.div>

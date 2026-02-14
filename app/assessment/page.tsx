@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
+import { Icon } from '@/lib/icons';
 import { AssessmentFeedback } from '@/lib/ai';
 
 const assessmentQuestions = [
@@ -114,8 +115,9 @@ export default function AssessmentPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2">
-              🤖 Your Assessment Results
+            <h1 className="text-3xl font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
+              <Icon name="Bot" size={32} className="text-flix-primary" />
+              Your Assessment Results
             </h1>
             <p className="text-flix-grayscale-70 mb-6">
               Personalized insights about your appreciation style
@@ -129,7 +131,8 @@ export default function AssessmentPage() {
                 className="p-4 bg-flix-feedback-success/10 rounded-card border border-flix-feedback-success/20"
               >
                 <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <span>✨</span> Your Strengths
+                  <Icon name="Sparkles" size={20} className="text-flix-feedback-success" />
+                  Your Strengths
                 </h3>
                 <ul className="space-y-2">
                   {feedback.strengths.map((strength, idx) => (
@@ -149,7 +152,8 @@ export default function AssessmentPage() {
                 className="p-4 bg-flix-feedback-warning/10 rounded-card border border-flix-feedback-warning/20"
               >
                 <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <span>🚀</span> Areas for Growth
+                  <Icon name="ArrowUpRight" size={20} className="text-flix-feedback-warning" />
+                  Areas for Growth
                 </h3>
                 <ul className="space-y-2">
                   {feedback.improvements.map((improvement, idx) => (
@@ -169,7 +173,8 @@ export default function AssessmentPage() {
                 className="p-4 bg-flix-background rounded-card border border-flix-grayscale-30"
               >
                 <h3 className="font-bold text-flix-grayscale-100 mb-3 flex items-center gap-2">
-                  <span>💡</span> Suggestions
+                  <Icon name="Lightbulb" size={20} className="text-flix-primary" />
+                  Suggestions
                 </h3>
                 <ul className="space-y-2">
                   {feedback.suggestions.map((suggestion, idx) => (
@@ -189,7 +194,8 @@ export default function AssessmentPage() {
                 className="p-4 bg-flix-ui-primary/10 rounded-card border border-flix-ui-primary/20"
               >
                 <h3 className="font-bold text-flix-grayscale-100 mb-2 flex items-center gap-2">
-                  <span>🎯</span> Style Alignment
+                  <Icon name="Target" size={20} className="text-flix-primary" />
+                  Style Alignment
                 </h3>
                 <p className="text-sm text-flix-grayscale-90">{feedback.alignment}</p>
               </motion.div>
@@ -221,8 +227,9 @@ export default function AssessmentPage() {
         >
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
-              <h1 className="text-3xl font-bold text-flix-grayscale-100">
-                🤖 Self Assessment (Giving Appreciation)
+              <h1 className="text-3xl font-bold text-flix-grayscale-100 flex items-center gap-2">
+                <Icon name="Bot" size={32} className="text-flix-primary" />
+                Self Assessment (Giving Appreciation)
               </h1>
               <span className="text-sm text-flix-grayscale-70">
                 {currentQuestion + 1}/{assessmentQuestions.length}

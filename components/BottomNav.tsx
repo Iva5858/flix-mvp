@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Icon } from '@/lib/icons';
 
 const navItems = [
-  { href: '/training', emoji: '✨', label: 'Learn' },
-  { href: '/toolbox', emoji: '🧰', label: 'Toolbox' },
-  { href: '/assessment', emoji: '🤖', label: 'Assessment' },
+  { href: '/training', icon: 'Sparkles', label: 'Learn' },
+  { href: '/toolbox', icon: 'Wrench', label: 'Toolbox' },
+  { href: '/assessment', icon: 'Bot', label: 'Assessment' },
 ];
 
 export default function BottomNav() {
@@ -30,7 +31,9 @@ export default function BottomNav() {
                     : 'text-flix-grayscale-70 hover:bg-flix-grayscale-10'
                 }`}
               >
-                <span className="text-2xl mb-1">{item.emoji}</span>
+                <span className="mb-1 flex justify-center">
+                  <Icon name={item.icon} size={24} />
+                </span>
                 <span className="text-xs font-medium">{item.label}</span>
               </motion.div>
             </Link>

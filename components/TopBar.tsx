@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Icon } from '@/lib/icons';
 
 export default function TopBar() {
   const pathname = usePathname();
@@ -26,9 +27,9 @@ export default function TopBar() {
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 rounded-full bg-flix-primary flex items-center justify-center text-white font-semibold cursor-pointer"
+            className="w-10 h-10 rounded-full bg-flix-primary flex items-center justify-center text-white cursor-pointer"
           >
-            👤
+            <Icon name="User" size={20} className="text-white" />
           </motion.div>
         </Link>
       </div>
