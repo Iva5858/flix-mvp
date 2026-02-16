@@ -7,7 +7,7 @@ import { Icon } from '@/lib/icons';
 const navItems = [
   { href: '/training', icon: 'Sparkles', label: 'Learn' },
   { href: '/toolbox', icon: 'Wrench', label: 'Toolbox' },
-  { href: '/assessment', icon: 'Bot', label: 'Assessment' },
+  { href: '/assessment', icon: 'Bot', label: 'Appreciator Test' },
 ];
 
 export default function BottomNav() {

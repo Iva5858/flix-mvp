@@ -83,7 +83,7 @@ export default function AssessmentPage() {
         <TopBar />
         <main className="max-w-lg mx-auto px-5 py-8">
           <div className="animate-fade-in">
-            <p className="text-sm font-medium text-flix-primary mb-1">Assessment</p>
+            <p className="text-sm font-medium text-flix-primary mb-1">Appreciator Test</p>
             <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">Your Results</h1>
             <p className="text-[15px] text-flix-grayscale-70 mb-8">Personalized insights about your appreciation style</p>
 
@@ -124,7 +124,7 @@ export default function AssessmentPage() {
                 onClick={resetAssessment}
                 className="w-full py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors text-[14px]"
               >
-                Retake Assessment
+                Retake Appreciator Test
               </button>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function AssessmentPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="text-sm font-medium text-flix-primary mb-0.5">Assessment</p>
-              <h1 className="text-xl font-semibold text-flix-grayscale-100 tracking-tight">Self Assessment</h1>
+              <h1 className="text-xl font-semibold text-flix-grayscale-100 tracking-tight">Appreciator Test</h1>
             </div>
             <span className="text-[13px] text-flix-grayscale-50 font-medium">
               {currentQuestion + 1}/{assessmentQuestions.length}
