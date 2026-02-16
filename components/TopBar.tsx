@@ -10,7 +10,7 @@ export default function TopBar() {
       <div className="flex items-center justify-between px-5 py-4 max-w-lg mx-auto">
         <Link href="/" className="flex items-center gap-2 -ml-1">
           <Image
-            src="/Flix_Logo_2016.png"
+            src="/Flix-logo-small.png"
             alt="Flix"
             width={100}
             height={30}
