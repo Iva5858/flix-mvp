@@ -3,15 +3,24 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Icon } from '@/lib/icons';
+import { getTranslations } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
-const navItems = [
-  { href: '/training', icon: 'Sparkles', label: 'Learn' },
-  { href: '/toolbox', icon: 'Wrench', label: 'Toolbox' },
-  { href: '/assessment', icon: 'Bot', label: 'Appreciator Test' },
-];
+interface BottomNavProps {
+  locale?: Locale;
+}
 
-export default function BottomNav() {
+export default function BottomNav({ locale }: BottomNavProps) {
   const pathname = usePathname();
+  const isDe = locale === 'de' || pathname?.startsWith('/de');
+  const base = isDe ? '/de' : '';
+  const t = getTranslations(isDe ? 'de' : 'en');
+
+  const navItems = [
+    { href: `${base}/training`, icon: 'Sparkles' as const, label: t.nav.learn },
+    { href: `${base}/toolbox`, icon: 'Wrench' as const, label: t.nav.toolbox },
+    { href: `${base}/assessment`, icon: 'Bot' as const, label: t.nav.appreciatorTest },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-flix-background/95 backdrop-blur-sm border-t border-flix-grayscale-20 safe-area-inset-bottom">

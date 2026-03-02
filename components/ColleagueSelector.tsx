@@ -3,13 +3,17 @@
 import { useState, useMemo } from 'react';
 import { Icon } from '@/lib/icons';
 import { User, mockUsers } from '@/lib/archetypes';
+import { getTranslations } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface ColleagueSelectorProps {
   onSelect: (user: User) => void;
   selectedUserId?: string;
+  locale?: Locale;
 }
 
-export default function ColleagueSelector({ onSelect, selectedUserId }: ColleagueSelectorProps) {
+export default function ColleagueSelector({ onSelect, selectedUserId, locale = 'en' }: ColleagueSelectorProps) {
+  const t = getTranslations(locale).colleagueSelector;
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredUsers = useMemo(() => mockUsers.filter(
@@ -24,7 +28,7 @@ export default function ColleagueSelector({ onSelect, selectedUserId }: Colleagu
       <div className="relative">
         <input
           type="text"
-          placeholder="Search colleagues..."
+          placeholder={t.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-4 py-3 pl-10 rounded-button border border-flix-grayscale-20 bg-flix-background text-flix-grayscale-100 placeholder-flix-grayscale-50 text-[14px] focus:outline-none focus:border-flix-primary focus:ring-1 focus:ring-flix-primary/20 transition-colors"
@@ -36,7 +40,7 @@ export default function ColleagueSelector({ onSelect, selectedUserId }: Colleagu
 
       <div className="space-y-2 max-h-80 overflow-y-auto">
         {filteredUsers.length === 0 ? (
-          <p className="text-center text-flix-grayscale-70 py-12 text-[14px]">No colleagues found</p>
+          <p className="text-center text-flix-grayscale-70 py-12 text-[14px]">{t.noColleaguesFound}</p>
         ) : (
           filteredUsers.map((user) => (
             <div

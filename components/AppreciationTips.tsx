@@ -1,21 +1,27 @@
 'use client';
 
 import { archetypes, User } from '@/lib/archetypes';
+import { archetypesDe } from '@/lib/archetypes-de';
 import type { AppreciationGuidance } from '@/lib/ai';
 import { useState, useEffect, useCallback } from 'react';
+import { getTranslations } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface AppreciationTipsProps {
   recipient: User;
   relationship: 'peer' | 'manager' | 'cross-team';
   occasion: 'achievement' | 'support' | 'milestone' | 'general';
+  locale?: Locale;
 }
 
-export default function AppreciationTips({ recipient, relationship, occasion }: AppreciationTipsProps) {
+export default function AppreciationTips({ recipient, relationship, occasion, locale = 'en' }: AppreciationTipsProps) {
+  const t = getTranslations(locale).appreciationTips;
+  const archetypeData = locale === 'de' ? archetypesDe : archetypes;
   const [guidance, setGuidance] = useState<AppreciationGuidance | null>(null);
   const [loading, setLoading] = useState(false);
 
   const archetype = recipient.preferences
-    ? archetypes[recipient.preferences.primaryArchetype]
+    ? archetypeData[recipient.preferences.primaryArchetype]
     : null;
 
   const loadGuidance = useCallback(async () => {
@@ -56,7 +62,7 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
     return (
       <div className="p-4 rounded-card bg-flix-feedback-warning/5 border border-flix-feedback-warning/10">
         <p className="text-[14px] text-flix-grayscale-90">
-          This colleague hasn&apos;t set their appreciation preferences yet.
+          {t.noPreferencesSet}
         </p>
       </div>
     );
@@ -66,7 +72,7 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
     <div className="space-y-4">
       <div className="p-4 rounded-card bg-flix-primary/5 border border-flix-primary/10 animate-fade-in">
         <h3 className="font-semibold text-flix-grayscale-100 text-[15px] mb-1">
-          {recipient.name} prefers {archetype.name}
+          {recipient.name} {t.prefers} {archetype.name}
         </h3>
         <p className="text-[14px] text-flix-grayscale-70 leading-relaxed">{archetype.description}</p>
       </div>
@@ -74,14 +80,14 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
       {loading ? (
         <div className="py-12 text-center">
           <div className="w-8 h-8 border-2 border-flix-grayscale-30 border-t-flix-primary rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-[14px] text-flix-grayscale-70">Generating personalized guidance...</p>
+          <p className="text-[14px] text-flix-grayscale-70">{t.generatingGuidance}</p>
         </div>
       ) : guidance ? (
         <div className="space-y-4">
           {[
-            { title: 'Best Approach', content: guidance.approach },
-            { title: 'Short Message', content: guidance.shortMessage, copy: true },
-            { title: 'Long Message', content: guidance.longMessage, copy: true },
+            { title: t.bestApproach, content: guidance.approach },
+            { title: t.shortMessage, content: guidance.shortMessage, copy: true },
+            { title: t.longMessage, content: guidance.longMessage, copy: true },
           ].map((block) => (
             <div
               key={block.title}
@@ -94,7 +100,7 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
                     onClick={() => copyToClipboard(block.content)}
                     className="text-[12px] font-medium text-flix-primary hover:text-flix-ui-primary transition-colors"
                   >
-                    Copy
+                    {t.copy}
                   </button>
                 )}
               </div>
@@ -104,17 +110,17 @@ export default function AppreciationTips({ recipient, relationship, occasion }: 
 
           <div className="grid grid-cols-1 gap-3">
             <div className="p-4 rounded-card bg-flix-feedback-success/5 border border-flix-feedback-success/10">
-              <h4 className="text-[12px] font-semibold text-flix-grayscale-90 mb-1 uppercase tracking-wider">Recommended Tone</h4>
+              <h4 className="text-[12px] font-semibold text-flix-grayscale-90 mb-1 uppercase tracking-wider">{t.recommendedTone}</h4>
               <p className="text-[14px] text-flix-grayscale-90">{guidance.tone}</p>
             </div>
             <div className="p-4 rounded-card bg-flix-feedback-warning/5 border border-flix-feedback-warning/10">
-              <h4 className="text-[12px] font-semibold text-flix-grayscale-90 mb-1 uppercase tracking-wider">What to Avoid</h4>
+              <h4 className="text-[12px] font-semibold text-flix-grayscale-90 mb-1 uppercase tracking-wider">{t.whatToAvoid}</h4>
               <p className="text-[14px] text-flix-grayscale-90">{guidance.avoid}</p>
             </div>
           </div>
 
           <div className="p-4 rounded-card bg-flix-background shadow-card border border-flix-grayscale-20">
-            <h4 className="text-sm font-semibold text-flix-grayscale-100 mb-2">Suggested Channels</h4>
+            <h4 className="text-sm font-semibold text-flix-grayscale-100 mb-2">{t.suggestedChannels}</h4>
             <div className="flex flex-wrap gap-1.5">
               {archetype.suggestedChannels.map((channel: string, idx: number) => (
                 <span

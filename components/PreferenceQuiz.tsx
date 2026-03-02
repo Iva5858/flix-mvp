@@ -2,17 +2,22 @@
 
 import { useState, useMemo } from 'react';
 import { ArchetypeId, archetypes, UserPreferences } from '@/lib/archetypes';
+import { archetypesDe } from '@/lib/archetypes-de';
+import { quizQuestionsDe } from '@/lib/preference-quiz-de';
 import { Icon } from '@/lib/icons';
 import ArchetypeCard from './ArchetypeCard';
 import type { QuestionResponse } from '@/lib/firestore';
 import { getOrCreateUserId } from '@/lib/userId';
+import { getTranslations } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface PreferenceQuizProps {
   onComplete: (preferences: UserPreferences) => void;
   initialPreferences?: UserPreferences;
+  locale?: Locale;
 }
 
-const quizQuestions = [
+const quizQuestionsEn = [
   {
     id: 1,
     question: 'After completing a major project, what follow-up would feel most meaningful to you?',
@@ -213,7 +218,11 @@ const quizQuestions = [
   },
 ];
 
-export default function PreferenceQuiz({ onComplete, initialPreferences }: PreferenceQuizProps) {
+export default function PreferenceQuiz({ onComplete, initialPreferences, locale = 'en' }: PreferenceQuizProps) {
+  const t = getTranslations(locale).preferenceQuiz;
+  const quizQuestions = locale === 'de' ? quizQuestionsDe : quizQuestionsEn;
+  const archetypeData = locale === 'de' ? archetypesDe : archetypes;
+
   // Randomize questions and answer choices once on mount
   const randomizedQuestions = useMemo(() => {
     const shuffled = [...quizQuestions].map(question => {
@@ -236,7 +245,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     }
     
     return shuffled;
-  }, []);
+  }, [quizQuestions]);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, ArchetypeId[]>>({});
@@ -356,7 +365,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
       // Check if this question was answered with archetype(s)
       if (selectedArchetypes !== undefined && selectedArchetypes.length > 0) {
         const archetypeNames = selectedArchetypes.map(
-          (id) => archetypes[id]?.name || id
+          (id) => archetypeData[id]?.name || id
         );
         const answerTexts = selectedArchetypes.map((id) => {
           const opt = question.options.find((o) => o.archetype === id);
@@ -437,19 +446,19 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
   // Show results screen
   if (quizComplete && result) {
-    const primaryArchetype = archetypes[result.primaryArchetype];
-    const detailArchetype = selectedArchetypeForDetails ? archetypes[selectedArchetypeForDetails] : null;
+    const primaryArchetype = archetypeData[result.primaryArchetype];
+    const detailArchetype = selectedArchetypeForDetails ? archetypeData[selectedArchetypeForDetails] : null;
 
     return (
       <div className="space-y-6">
         <div className="animate-fade-in">
           <h3 className="text-lg font-semibold text-flix-grayscale-100 mb-6 tracking-tight">
-            Appreciation Preferences
+            {t.appreciationPreferences}
           </h3>
 
           <div className="space-y-4">
             <div>
-              <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">Primary Style</p>
+              <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">{t.primaryStyle}</p>
               <ArchetypeCard
                 archetype={primaryArchetype}
                 size="medium"
@@ -459,12 +468,12 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
             {result.secondaryPreferences.length > 0 && (
               <div>
-                <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">Secondary</p>
+                <p className="text-[12px] font-medium text-flix-grayscale-70 mb-2 uppercase tracking-wider">{t.secondary}</p>
                 <div className="space-y-2">
                   {result.secondaryPreferences.map((id) => (
                     <ArchetypeCard
                       key={id}
-                      archetype={archetypes[id]}
+                      archetype={archetypeData[id]}
                       size="small"
                       onClick={() => setSelectedArchetypeForDetails(id)}
                     />
@@ -495,7 +504,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
               <div className="space-y-4">
                 <div>
                   <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
-                    Preferred Recognition:
+                    {t.preferredRecognition}:
                   </h5>
                   <div className="flex flex-wrap gap-2">
                     {detailArchetype.preferredRecognition.map((rec, idx) => (
@@ -511,7 +520,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
                 <div>
                   <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
-                    Best Practices:
+                    {t.bestPractices}:
                   </h5>
                   <ul className="space-y-1">
                     {detailArchetype.do.map((item, idx) => (
@@ -525,7 +534,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
                 <div>
                   <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
-                    What to Avoid:
+                    {t.whatToAvoid}:
                   </h5>
                   <ul className="space-y-1">
                     {detailArchetype.dont.map((item, idx) => (
@@ -539,7 +548,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
 
                 <div>
                   <h5 className="text-sm font-semibold text-flix-grayscale-90 mb-2">
-                    Suggested Channels:
+                    {t.suggestedChannels}:
                   </h5>
                   <div className="flex flex-wrap gap-2">
                     {detailArchetype.suggestedChannels.map((channel, idx) => (
@@ -567,7 +576,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
             disabled={saving}
             className="w-full mt-6 py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[14px] active:scale-[0.98]"
           >
-            {saving ? 'Saving...' : 'Save Preferences'}
+            {saving ? t.saving : t.savePreferences}
           </button>
         </div>
       </div>
@@ -579,7 +588,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
     <div className="space-y-6">
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-flix-grayscale-100 tracking-tight">Preference Quiz</h3>
+          <h3 className="text-lg font-semibold text-flix-grayscale-100 tracking-tight">{t.title}</h3>
           <span className="text-[13px] text-flix-grayscale-50 font-medium">
             {currentQuestion + 1}/{randomizedQuestions.length}
           </span>
@@ -600,7 +609,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
         {!showOpenEndedInput ? (
           <>
             <p className="text-[13px] text-flix-grayscale-70 mb-3">
-              Select all that apply
+              {t.selectAllThatApply}
             </p>
             <div className="space-y-2 mb-4">
               {question.options.map((option) => {
@@ -647,7 +656,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   onClick={() => setShowOpenEndedInput(true)}
                   className="w-full p-4 rounded-card border border-dashed border-flix-grayscale-20 bg-flix-grayscale-10 hover:border-flix-grayscale-30 transition-colors text-flix-grayscale-100 font-medium text-[14px] active:scale-[0.98]"
                 >
-                  + Add your own answer
+                  {t.addYourOwnAnswer}
                 </button>
 
               <div className="flex gap-3">
@@ -656,7 +665,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   onClick={handleSkip}
                   className="flex-1 py-3 px-4 rounded-button border border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-70 font-medium transition-colors text-[14px] active:scale-[0.98]"
                 >
-                  Skip
+                  {t.skip}
                 </button>
 
                 <button
@@ -665,7 +674,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   disabled={!hasAnswer}
                   className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[14px] active:scale-[0.98]"
                 >
-                  Next
+                  {t.next}
                 </button>
               </div>
             </div>
@@ -675,7 +684,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
             <textarea
               value={openEndedText}
               onChange={(e) => setOpenEndedText(e.target.value)}
-              placeholder="Type your answer here..."
+              placeholder={t.typeYourAnswer}
               className="w-full p-4 rounded-card border border-flix-grayscale-20 bg-flix-grayscale-10 text-flix-grayscale-100 placeholder-flix-grayscale-50 focus:border-flix-primary focus:outline-none focus:ring-1 focus:ring-flix-primary/30 resize-none text-[14px]"
               rows={4}
               autoFocus
@@ -689,7 +698,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   }}
                   className="flex-1 py-3 px-4 rounded-button border border-flix-grayscale-20 bg-flix-grayscale-10 hover:bg-flix-grayscale-20 text-flix-grayscale-70 font-medium transition-colors text-[14px] active:scale-[0.98]"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
                 <button
                   type="button"
@@ -697,7 +706,7 @@ export default function PreferenceQuiz({ onComplete, initialPreferences }: Prefe
                   disabled={!openEndedText.trim()}
                   className="flex-1 py-3 px-4 rounded-button bg-flix-primary text-white font-medium hover:bg-flix-ui-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
                 >
-                  Submit
+                  {t.submit}
                 </button>
             </div>
           </div>

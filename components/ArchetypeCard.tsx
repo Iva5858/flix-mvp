@@ -1,12 +1,15 @@
 'use client';
 
 import { AppreciationArchetype } from '@/lib/archetypes';
+import { getTranslations } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 
 interface ArchetypeCardProps {
   archetype: AppreciationArchetype;
   isSelected?: boolean;
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
+  locale?: Locale;
 }
 
 export default function ArchetypeCard({
@@ -14,7 +17,9 @@ export default function ArchetypeCard({
   isSelected = false,
   onClick,
   size = 'medium',
+  locale = 'en',
 }: ArchetypeCardProps) {
+  const preferredRecognitionLabel = getTranslations(locale).preferenceQuiz.preferredRecognition;
   const sizeClasses = {
     small: 'p-3',
     medium: 'p-4',
@@ -42,7 +47,7 @@ export default function ArchetypeCard({
           <p className="text-[13px] text-flix-grayscale-70 leading-relaxed">{archetype.description}</p>
           {size !== 'small' && (
             <div className="mt-3">
-              <p className="text-[11px] font-medium text-flix-grayscale-70 uppercase tracking-wider mb-1.5">Preferred Recognition</p>
+              <p className="text-[11px] font-medium text-flix-grayscale-70 uppercase tracking-wider mb-1.5">{preferredRecognitionLabel}</p>
               <div className="flex flex-wrap gap-1.5">
                 {archetype.preferredRecognition.slice(0, 3).map((rec, idx) => (
                   <span
