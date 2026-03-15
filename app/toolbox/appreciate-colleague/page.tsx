@@ -93,7 +93,17 @@ export default function AppreciateColleaguePage() {
     setStep('compose');
   };
 
+  const logAppreciation = () => {
+    if (!selectedColleague) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem('flix_appreciations') || '[]');
+      const entry = { id: Date.now().toString(), recipientName: selectedColleague.name, occasion, date: new Date().toISOString() };
+      localStorage.setItem('flix_appreciations', JSON.stringify([...existing, entry]));
+    } catch { /* ignore */ }
+  };
+
   const handlePlatformAction = (platform: Platform) => {
+    logAppreciation();
     setSelectedPlatform(platform);
     if (platform === 'copy') {
       navigator.clipboard.writeText(message).catch(() => {});
@@ -367,7 +377,7 @@ export default function AppreciateColleaguePage() {
               </button>
 
               <button
-                onClick={() => { setSelectedPlatform(null); setStep('sent'); }}
+                onClick={() => { logAppreciation(); setSelectedPlatform(null); setStep('sent'); }}
                 className="w-full bg-flix-background rounded-card p-5 border border-flix-grayscale-20 shadow-card hover:shadow-card-hover hover:border-flix-grayscale-30 transition-all text-left group"
               >
                 <div className="flex items-center gap-4">

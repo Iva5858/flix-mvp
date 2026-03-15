@@ -29,6 +29,7 @@ import {
   Send,
   MessageSquare,
   ExternalLink,
+  ClipboardList,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -61,6 +62,7 @@ export const icons: Record<string, LucideIcon> = {
   Send,
   MessageSquare,
   ExternalLink,
+  ClipboardList,
 };
 
 interface IconProps {

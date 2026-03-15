@@ -60,6 +60,61 @@ export const assessmentQuestionsEn: AssessmentQuestion[] = [
       'Nothing significant — I appreciate colleagues regularly and feel confident doing so',
     ],
   },
+  {
+    id: 6,
+    question: 'A colleague has been quietly covering extra work while a teammate is on extended leave. You have not said anything yet. What do you most likely do?',
+    options: [
+      'Post a shoutout in the team channel to make their effort visible',
+      'Drop them a private message to let them know you have noticed',
+      'Write a detailed note capturing what you have observed and why it matters',
+      'Organise a small team lunch as a group thank-you',
+      'Mention their reliability in their next development conversation',
+    ],
+  },
+  {
+    id: 7,
+    question: 'Your manager asks you to recognise a junior colleague in front of the entire department. You...',
+    options: [
+      'Do it enthusiastically — public recognition is a gift',
+      'Ask them first whether they would be comfortable with it',
+      'Suggest pairing it with a short written note to make it last',
+      'Propose adding a small team gesture or gift to accompany it',
+      'Use the moment to spotlight their growth trajectory and potential',
+    ],
+  },
+  {
+    id: 8,
+    question: 'After a successful project, how do you typically share credit with your team?',
+    options: [
+      'Call people out by name in the wider team debrief or all-hands',
+      'Send a personal message to each person individually',
+      'Write a thoughtful summary naming each contribution and its impact',
+      'Suggest a team celebration — lunch, outing, or a shared experience',
+      'Highlight how each person grew and what it means for their development',
+    ],
+  },
+  {
+    id: 9,
+    question: 'A colleague did something worth recognising three weeks ago and you forgot at the time. What do you do now?',
+    options: [
+      'Bring it up in the next team meeting — better late than never',
+      'Send a personal note acknowledging it is overdue but entirely genuine',
+      'Write a thoughtful message capturing what they did and why it still matters',
+      'Suggest a belated coffee or lunch to catch up and celebrate properly',
+      'Reference it in a 1:1 as a clear example of their progress',
+    ],
+  },
+  {
+    id: 10,
+    question: 'You show appreciation to a colleague and it does not seem to land well. What do you do next?',
+    options: [
+      'Try again more visibly — perhaps they did not hear it clearly',
+      'Ask them privately how they prefer to receive recognition',
+      'Write it down instead — sometimes words on a page land differently',
+      'Switch to something tangible to make the appreciation feel real',
+      'Reframe it as encouragement linked to where they are heading',
+    ],
+  },
 ];
 
 export const assessmentQuestionsDe: AssessmentQuestion[] = [
@@ -116,6 +171,61 @@ export const assessmentQuestionsDe: AssessmentQuestion[] = [
       'Keine generische Wertschätzung geben zu wollen, die hohl oder performativ wirkt',
       'Die Zeit zu finden, um es zu einer konsistenten Praxis zu machen',
       'Nichts Wesentliches — ich schätze Kollegen regelmäßig wert und fühle mich dabei sicher',
+    ],
+  },
+  {
+    id: 6,
+    question: 'Ein Kollege übernimmt still und leise Zusatzaufgaben, während ein Teammitglied im Langzeiturlaub ist. Du hast noch nichts gesagt. Was tust du am ehesten?',
+    options: [
+      'Einen Shoutout im Team-Kanal posten, um den Einsatz sichtbar zu machen',
+      'Ihm eine private Nachricht schicken und zeigen, dass du es bemerkt hast',
+      'Eine ausführliche Notiz schreiben, die festhält, was du gesehen hast und warum es wichtig ist',
+      'Ein kleines Team-Mittagessen organisieren als gemeinsames Dankeschön',
+      'Die Zuverlässigkeit beim nächsten Entwicklungsgespräch ansprechen',
+    ],
+  },
+  {
+    id: 7,
+    question: 'Dein Vorgesetzter bittet dich, einen jüngeren Kollegen vor der gesamten Abteilung anzuerkennen. Du...',
+    options: [
+      'Tust es enthusiastisch — öffentliche Anerkennung ist ein Geschenk',
+      'Fragst ihn zuerst, ob er sich damit wohlfühlt',
+      'Schlägst vor, es mit einem kurzen schriftlichen Beitrag zu verbinden',
+      'Empfiehlst, eine kleine Teamgeste oder ein Geschenk dazuzugeben',
+      'Nutzt den Moment, um die Entwicklung und das Potenzial der Person hervorzuheben',
+    ],
+  },
+  {
+    id: 8,
+    question: 'Nach einem erfolgreichen Projekt — wie teilst du die Anerkennung typischerweise mit deinem Team?',
+    options: [
+      'Nennst Personen namentlich im Team-Debrief oder All-Hands',
+      'Schickst jedem Teammitglied eine persönliche Nachricht',
+      'Schreibst eine durchdachte Zusammenfassung mit den jeweiligen Beiträgen und ihrer Wirkung',
+      'Schlägst eine Teamfeier vor — Mittagessen, Ausflug oder gemeinsames Erlebnis',
+      'Hebst hervor, wie jede Person gewachsen ist und was das für ihre Entwicklung bedeutet',
+    ],
+  },
+  {
+    id: 9,
+    question: 'Ein Kollege hat vor drei Wochen etwas geleistet, das Anerkennung verdient hätte, und damals hast du es vergessen. Was tust du jetzt?',
+    options: [
+      'Es beim nächsten Team-Meeting ansprechen — besser spät als nie',
+      'Eine persönliche Nachricht schicken, die offen zugibt, dass es überfällig ist, aber ehrlich gemeint',
+      'Eine durchdachte Nachricht schreiben, die festhält, was getan wurde und warum es immer noch zählt',
+      'Ein nachträgliches Kaffee- oder Mittagessen vorschlagen, um es in Ruhe nachzuholen',
+      'Es in einem 1:1 als klares Beispiel für seinen Fortschritt aufgreifen',
+    ],
+  },
+  {
+    id: 10,
+    question: 'Du zeigst einem Kollegen Wertschätzung und sie scheint nicht anzukommen. Was tust du als Nächstes?',
+    options: [
+      'Es sichtbarer versuchen — vielleicht wurde es nicht klar wahrgenommen',
+      'Privat fragen, wie er Anerkennung am liebsten erhält',
+      'Es stattdessen aufschreiben — manchmal landen Worte auf Papier anders',
+      'Zu etwas Greifbarem wechseln, um die Wertschätzung spürbar zu machen',
+      'Es als Ermutigung mit Blick auf die Zukunft der Person neu formulieren',
     ],
   },
 ];
