@@ -2,15 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
 import { trainingModules } from '@/lib/training';
 
 export default function TrainingPage() {
+  const router = useRouter();
   const [moduleProgress, setModuleProgress] = useState<Record<number, { completed: boolean; progress: number }>>({});
 
   useEffect(() => {
+    if (!localStorage.getItem('flix_user')) {
+      router.replace('/');
+      return;
+    }
     const progress: Record<number, { completed: boolean; progress: number }> = {};
     trainingModules.forEach((module) => {
       const saved = localStorage.getItem(`training-${module.id}`);
@@ -25,7 +31,7 @@ export default function TrainingPage() {
       }
     });
     setModuleProgress(progress);
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-flix-grayscale-10 pb-24">

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
@@ -15,10 +16,17 @@ const assessmentQuestions = [
 ];
 
 export default function AssessmentPage() {
+  const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [responses, setResponses] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<AssessmentFeedback | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) {
+      router.replace('/');
+    }
+  }, [router]);
 
   const handleAnswer = (answer: string) => {
     const newResponses = { ...responses, [currentQuestion]: answer };

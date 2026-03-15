@@ -22,7 +22,13 @@ import {
   Search,
   Hand,
   ChevronRight,
+  ChevronLeft,
   ArrowUpRight,
+  Mail,
+  Copy,
+  Send,
+  MessageSquare,
+  ExternalLink,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -48,7 +54,13 @@ export const icons: Record<string, LucideIcon> = {
   Search,
   Hand,
   ChevronRight,
+  ChevronLeft,
   ArrowUpRight,
+  Mail,
+  Copy,
+  Send,
+  MessageSquare,
+  ExternalLink,
 };
 
 interface IconProps {

@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
@@ -8,21 +10,12 @@ import { Icon } from '@/lib/icons';
 const toolboxTools = [
   {
     id: 'appreciate-colleague',
-    title: 'Appreciate a Colleague',
-    description: 'Personalized tips for appreciating someone',
+    title: 'Appreciate a Teammate',
+    description: 'Personalised tips and message sending',
     icon: 'Heart',
     accentColor: 'text-flix-primary',
     bgColor: 'bg-flix-primary/10',
     href: '/toolbox/appreciate-colleague',
-  },
-  {
-    id: 'phrase-generator',
-    title: 'Phrase Generator',
-    description: 'Generate appreciation messages',
-    icon: 'Sparkles',
-    accentColor: 'text-flix-secondary',
-    bgColor: 'bg-flix-secondary/10',
-    href: '/toolbox/phrase-generator',
   },
   {
     id: 'channel-guide',
@@ -45,6 +38,14 @@ const toolboxTools = [
 ];
 
 export default function ToolboxPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) {
+      router.replace('/');
+    }
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-flix-grayscale-10 pb-24">
       <TopBar />
@@ -84,7 +85,7 @@ export default function ToolboxPage() {
                 <Icon name="Lightbulb" size={14} className="text-flix-primary" />
                 Pro Tip
               </span>
-              {' — '}Use &quot;Appreciate a Colleague&quot; for personalized guidance based on their preferences
+              {' — '}Use &quot;Appreciate a Teammate&quot; to get personalised guidance and send a message directly from the app
             </p>
           </div>
         </div>
