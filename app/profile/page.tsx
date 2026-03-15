@@ -7,6 +7,7 @@ import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import ArchetypeCard from '@/components/ArchetypeCard';
 import { UserPreferences, archetypes, ArchetypeId } from '@/lib/archetypes';
+import { trainingModules } from '@/lib/training';
 import { Icon } from '@/lib/icons';
 
 const PreferenceQuiz = dynamic(() => import('@/components/PreferenceQuiz'), {
@@ -155,12 +156,12 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex justify-between mb-1.5">
                     <span className="text-[13px] text-flix-grayscale-70">Lessons Completed</span>
-                    <span className="text-[13px] font-medium text-flix-grayscale-100">{moduleCount}/4</span>
+                    <span className="text-[13px] font-medium text-flix-grayscale-100">{moduleCount}/{trainingModules.length}</span>
                   </div>
                   <div className="h-1.5 bg-flix-grayscale-20 rounded-pill overflow-hidden">
                     <div
                       className="h-full bg-flix-primary rounded-pill transition-[width] duration-300"
-                      style={{ width: `${(moduleCount / 4) * 100}%` }}
+                      style={{ width: `${(moduleCount / trainingModules.length) * 100}%` }}
                     />
                   </div>
                 </div>

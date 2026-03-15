@@ -12,42 +12,46 @@ export interface AppreciationContext {
 export function buildAppreciationPrompt(context: AppreciationContext): string {
   const { recipientArchetype, relationship, occasion, additionalContext } = context;
 
-  return `You are an expert in employee appreciation and recognition. Help craft personalized appreciation guidance.
+  return `You are an expert in employee appreciation and recognition, working within Flix SE's internal appreciation platform. The platform is built around five distinct appreciation styles — Fire, Moon, Wind, Water, and Lightning — each describing how a person prefers to receive recognition.
+
+Your task is to generate personalised appreciation guidance based on the recipient's confirmed appreciation style.
 
 Recipient's Appreciation Style: ${recipientArchetype.name}
 - Description: ${recipientArchetype.description}
-- Preferred Recognition: ${recipientArchetype.preferredRecognition.join(', ')}
-- Do's: ${recipientArchetype.do.join(', ')}
-- Don'ts: ${recipientArchetype.dont.join(', ')}
+- What they prefer: ${recipientArchetype.preferredRecognition.join(', ')}
+- Best practices: ${recipientArchetype.do.join(', ')}
+- What to avoid: ${recipientArchetype.dont.join(', ')}
+- Best channels: ${recipientArchetype.suggestedChannels.join(', ')}
 
 Relationship: ${relationship}
 Occasion: ${occasion}
-${additionalContext ? `Additional Context: ${additionalContext}` : ''}
+${additionalContext ? `Additional context: ${additionalContext}` : ''}
 
-Provide guidance in the following format:
-1. Best recognition approach (2-3 sentences)
-2. Suggested short message (1-2 sentences)
-3. Suggested longer message (3-4 sentences)
-4. Tone recommendation
-5. What to avoid
+Respond with a JSON object using exactly these keys:
+- approach: a 2–3 sentence explanation of how to approach this recognition given their style, relationship, and occasion
+- shortMessage: a ready-to-use 1–2 sentence appreciation message in the sender's voice
+- longMessage: a ready-to-use 3–4 sentence appreciation message that is more detailed and personal
+- tone: a single short phrase describing the recommended tone (e.g. "Warm and direct", "Formal but personal")
+- avoid: one specific behaviour or phrasing pattern to avoid with this person
 
-Be respectful, inclusive, and focus on making appreciation natural and meaningful.`;
+Keep all messages natural, specific, and inclusive. Do not use placeholders like [Name] — write the messages as if coming directly from the sender.`;
 }
 
-export function buildAssessmentPrompt(userResponses: Record<string, any>, userPreferences?: any): string {
-  return `You are an expert in employee appreciation and emotional intelligence. Analyze how someone gives appreciation and provide constructive feedback.
+export function buildAssessmentPrompt(userResponses: Record<string, unknown>, userPreferences?: unknown): string {
+  return `You are an expert in employee appreciation and emotional intelligence, working within Flix SE's internal appreciation platform. The platform recognises five appreciation styles: Fire (public recognition), Moon (private, personal recognition), Wind (written, detailed recognition), Water (tangible rewards and experiences), and Lightning (development opportunities and growth).
 
-User's Appreciation Patterns:
+Your task is to analyse how someone currently gives appreciation and provide honest, constructive feedback to help them grow.
+
+Their responses to the appreciation assessment:
 ${JSON.stringify(userResponses, null, 2)}
 
-${userPreferences ? `User's Preferences: ${JSON.stringify(userPreferences, null, 2)}` : ''}
+${userPreferences ? `Their own appreciation style preferences: ${JSON.stringify(userPreferences, null, 2)}` : ''}
 
-Provide:
-1. Strengths in their appreciation style (2-3 points)
-2. Areas for improvement (2-3 points)
-3. Specific suggestions for growth
-4. How their style aligns with different appreciation preferences
+Respond with a JSON object using exactly these keys:
+- strengths: an array of 2–3 strings describing genuine strengths in how this person gives appreciation
+- improvements: an array of 2–3 strings describing specific, actionable areas where they can improve
+- suggestions: an array of 2–3 strings with concrete suggestions they can act on immediately
+- alignment: a single string (2–3 sentences) describing how their giving style aligns with — or diverges from — the five appreciation styles, and which style or styles they seem to naturally lean toward
 
-Be encouraging, constructive, and focus on positive behavior change.`;
+Be direct and constructive. Acknowledge what is working, be honest about gaps, and keep suggestions practical.`;
 }
-

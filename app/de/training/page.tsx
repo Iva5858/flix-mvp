@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
@@ -10,9 +11,14 @@ import { getTranslations } from '@/lib/i18n';
 
 export default function DeTrainingPage() {
   const t = getTranslations('de');
+  const router = useRouter();
   const [moduleProgress, setModuleProgress] = useState<Record<number, { completed: boolean; progress: number }>>({});
 
   useEffect(() => {
+    if (!localStorage.getItem('flix_user')) {
+      router.replace('/');
+      return;
+    }
     const progress: Record<number, { completed: boolean; progress: number }> = {};
     trainingModulesDe.forEach((module) => {
       const saved = localStorage.getItem(`training-de-${module.id}`);

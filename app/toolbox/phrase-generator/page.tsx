@@ -246,7 +246,7 @@ export default function PhraseGeneratorPage() {
             </button>
             <p className="text-sm font-medium text-flix-primary mb-1">Phrase Generator</p>
             <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">How to Send?</h1>
-            <p className="text-[15px] text-flix-grayscale-70 mb-8">Choose how you'd like to deliver your appreciation</p>
+            <p className="text-[15px] text-flix-grayscale-70 mb-8">Choose how you&apos;d like to deliver your appreciation</p>
 
             <div className="space-y-3">
               <button
@@ -274,8 +274,8 @@ export default function PhraseGeneratorPage() {
                     <Icon name="Send" size={22} className="text-flix-feedback-success" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">Send Directly</p>
-                    <p className="text-[13px] text-flix-grayscale-70">Mark as sent within the app</p>
+                    <p className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">Log as Sent</p>
+                    <p className="text-[13px] text-flix-grayscale-70">Record that you sent it outside the app</p>
                   </div>
                   <Icon name="ChevronRight" size={18} className="text-flix-grayscale-30 group-hover:text-flix-grayscale-50 transition-colors flex-shrink-0" />
                 </div>
@@ -330,17 +330,17 @@ export default function PhraseGeneratorPage() {
               <Icon name="Check" size={32} className="text-flix-feedback-success" />
             </div>
             <p className="text-sm font-medium text-flix-primary mb-1">
-              {selectedPlatform === 'copy' ? 'Copied!' : 'Message Sent'}
+              {selectedPlatform === 'copy' ? 'Copied!' : 'Message Logged'}
             </p>
             <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-3 tracking-tight">
-              {selectedPlatform === 'copy' ? 'Ready to Paste' : 'Appreciation Delivered'}
+              {selectedPlatform === 'copy' ? 'Ready to Paste' : 'Appreciation Logged'}
             </h1>
             <p className="text-[15px] text-flix-grayscale-70 mb-10 max-w-xs leading-relaxed">
               {selectedPlatform === 'copy'
                 ? 'Your message is in the clipboard — paste it wherever you like.'
                 : selectedPlatform
                 ? `Your message is ready to send via ${platformConfig.find(p => p.id === selectedPlatform)?.label}.`
-                : 'Your appreciation has been recorded. Keep spreading positivity!'}
+                : 'Logged! Keep the appreciation flowing — it adds up over time.'}
             </p>
 
             <div className="w-full space-y-3">

@@ -11,7 +11,7 @@ const toolboxTools = [
   {
     id: 'appreciate-colleague',
     title: 'Appreciate a Teammate',
-    description: 'Personalised tips and message sending',
+    description: 'Personalised tips, message crafting, and delivery',
     icon: 'Heart',
     accentColor: 'text-flix-primary',
     bgColor: 'bg-flix-primary/10',
@@ -20,7 +20,7 @@ const toolboxTools = [
   {
     id: 'channel-guide',
     title: 'Channel Guide',
-    description: 'Choose the best way to show appreciation',
+    description: 'Match the right channel to each appreciation style',
     icon: 'Smartphone',
     accentColor: 'text-flix-feedback-info',
     bgColor: 'bg-flix-feedback-info/10',
@@ -29,7 +29,7 @@ const toolboxTools = [
   {
     id: 'timing-tips',
     title: 'Timing Tips',
-    description: 'Learn when to show appreciation',
+    description: 'When to appreciate for maximum impact',
     icon: 'Clock',
     accentColor: 'text-flix-feedback-success',
     bgColor: 'bg-flix-feedback-success/10',

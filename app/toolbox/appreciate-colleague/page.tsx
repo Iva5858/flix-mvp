@@ -306,7 +306,7 @@ export default function AppreciateColleaguePage() {
             ) : !archetype ? (
               <div className="p-4 rounded-card bg-flix-feedback-warning/5 border border-flix-feedback-warning/10">
                 <p className="text-[14px] text-flix-grayscale-90">
-                  This teammate hasn't set their appreciation preferences yet — use your best judgement to personalise your message.
+                  This teammate hasn&apos;t set their appreciation preferences yet — use your best judgement to personalise your message.
                 </p>
               </div>
             ) : null}
@@ -332,7 +332,8 @@ export default function AppreciateColleaguePage() {
 
             <button
               onClick={() => setStep('send-choice')}
-              className="w-full py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors text-[14px] flex items-center justify-center gap-2"
+              disabled={!message.trim()}
+              className="w-full py-3 bg-flix-primary text-white rounded-button font-medium hover:bg-flix-ui-primary transition-colors text-[14px] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Icon name="Send" size={16} />
               Send This Message
@@ -346,7 +347,7 @@ export default function AppreciateColleaguePage() {
             {backButton('compose')}
             <p className="text-sm font-medium text-flix-primary mb-1">Toolbox</p>
             <h1 className="text-2xl font-semibold text-flix-grayscale-100 mb-2 tracking-tight">How to Send?</h1>
-            <p className="text-[15px] text-flix-grayscale-70 mb-8">Choose how you'd like to deliver your appreciation</p>
+            <p className="text-[15px] text-flix-grayscale-70 mb-8">Choose how you&apos;d like to deliver your appreciation</p>
 
             <div className="space-y-3">
               <button
@@ -374,8 +375,8 @@ export default function AppreciateColleaguePage() {
                     <Icon name="Send" size={22} className="text-flix-feedback-success" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">Send Directly</p>
-                    <p className="text-[13px] text-flix-grayscale-70">Mark as sent within the app</p>
+                    <p className="font-semibold text-flix-grayscale-100 text-[15px] mb-0.5">Log as Sent</p>
+                    <p className="text-[13px] text-flix-grayscale-70">Record that you sent it outside the app</p>
                   </div>
                   <Icon name="ChevronRight" size={18} className="text-flix-grayscale-30 group-hover:text-flix-grayscale-50 transition-colors flex-shrink-0" />
                 </div>
@@ -437,7 +438,7 @@ export default function AppreciateColleaguePage() {
                 ? 'Your message is in the clipboard — paste it wherever you like.'
                 : selectedPlatform
                 ? `Your message is ready to send via ${platformConfig.find(p => p.id === selectedPlatform)?.label}.`
-                : 'Your appreciation has been recorded. Keep spreading positivity!'}
+                : 'Logged! Keep the appreciation flowing — it adds up over time.'}
             </p>
 
             <div className="w-full space-y-3">

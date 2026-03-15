@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
@@ -8,6 +10,11 @@ import { getTranslations } from '@/lib/i18n';
 
 export default function DePhraseGeneratorPage() {
   const t = getTranslations('de');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) router.replace('/');
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-flix-grayscale-10 pb-20">

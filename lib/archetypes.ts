@@ -217,12 +217,12 @@ export interface User {
   preferences?: UserPreferences;
 }
 
-// Mock data for development
+// Mock data for development — covers all 5 archetypes with varied roles and departments
 export const mockUsers: User[] = [
   {
     id: '1',
-    name: 'Alex Chen',
-    role: 'Software Engineer',
+    name: 'Lena Hoffmann',
+    role: 'Senior Software Engineer',
     department: 'Engineering',
     preferences: {
       primaryArchetype: 'growth-chaser',
@@ -232,7 +232,7 @@ export const mockUsers: User[] = [
   },
   {
     id: '2',
-    name: 'Sarah Johnson',
+    name: 'Marcus Webb',
     role: 'Product Manager',
     department: 'Product',
     preferences: {
@@ -243,14 +243,65 @@ export const mockUsers: User[] = [
   },
   {
     id: '3',
-    name: 'Michael Brown',
-    role: 'Designer',
+    name: 'Priya Nair',
+    role: 'UX Designer',
     department: 'Design',
     preferences: {
       primaryArchetype: 'quiet-achiever',
       secondaryPreferences: ['word-collector'],
       visibility: 'team',
     },
+  },
+  {
+    id: '4',
+    name: 'Jonas Fischer',
+    role: 'Data Analyst',
+    department: 'Analytics',
+    preferences: {
+      primaryArchetype: 'word-collector',
+      secondaryPreferences: ['quiet-achiever'],
+      visibility: 'team',
+    },
+  },
+  {
+    id: '5',
+    name: 'Amara Diallo',
+    role: 'Customer Success Lead',
+    department: 'Customer Success',
+    preferences: {
+      primaryArchetype: 'reward-enthusiast',
+      secondaryPreferences: ['spotlight-seeker'],
+      visibility: 'public',
+    },
+  },
+  {
+    id: '6',
+    name: 'Tom Eriksson',
+    role: 'Engineering Manager',
+    department: 'Engineering',
+    preferences: {
+      primaryArchetype: 'growth-chaser',
+      secondaryPreferences: ['quiet-achiever'],
+      visibility: 'team',
+    },
+  },
+  {
+    id: '7',
+    name: 'Sophie Müller',
+    role: 'HR Business Partner',
+    department: 'People & Culture',
+    preferences: {
+      primaryArchetype: 'word-collector',
+      secondaryPreferences: ['reward-enthusiast'],
+      visibility: 'team',
+    },
+  },
+  {
+    id: '8',
+    name: 'Ravi Shankar',
+    role: 'Backend Engineer',
+    department: 'Engineering',
+    // No preferences set — demonstrates the "no style yet" fallback
   },
 ];
 

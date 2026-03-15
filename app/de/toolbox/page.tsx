@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
@@ -10,25 +12,16 @@ const toolboxTools = (t: ReturnType<typeof getTranslations>['toolbox']) => [
   {
     id: 'appreciate-colleague',
     title: t.appreciateColleague,
-    description: t.appreciateColleagueDesc,
+    description: 'Personalisierte Tipps, Nachrichtengestaltung und Zustellung',
     icon: 'Heart' as const,
     accentColor: 'text-flix-primary',
     bgColor: 'bg-flix-primary/10',
     href: '/de/toolbox/appreciate-colleague',
   },
   {
-    id: 'phrase-generator',
-    title: t.phraseGenerator,
-    description: t.phraseGeneratorDesc,
-    icon: 'Sparkles' as const,
-    accentColor: 'text-flix-secondary',
-    bgColor: 'bg-flix-secondary/10',
-    href: '/de/toolbox/phrase-generator',
-  },
-  {
     id: 'channel-guide',
     title: t.channelGuide,
-    description: t.channelGuideDesc,
+    description: 'Den richtigen Kanal für jeden Wertschätzungsstil finden',
     icon: 'Smartphone' as const,
     accentColor: 'text-flix-feedback-info',
     bgColor: 'bg-flix-feedback-info/10',
@@ -37,7 +30,7 @@ const toolboxTools = (t: ReturnType<typeof getTranslations>['toolbox']) => [
   {
     id: 'timing-tips',
     title: t.timingTips,
-    description: t.timingTipsDesc,
+    description: 'Wann du wertschätzt, für maximale Wirkung',
     icon: 'Clock' as const,
     accentColor: 'text-flix-feedback-success',
     bgColor: 'bg-flix-feedback-success/10',
@@ -47,6 +40,11 @@ const toolboxTools = (t: ReturnType<typeof getTranslations>['toolbox']) => [
 
 export default function DeToolboxPage() {
   const t = getTranslations('de');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) router.replace('/');
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-flix-grayscale-10 pb-24">

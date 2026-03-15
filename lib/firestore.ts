@@ -64,15 +64,10 @@ export async function saveQuizResults(
       throw new Error('Firebase is not initialized. Please check your environment variables and restart the development server.');
     }
 
-    // Import archetypes to get names
-    const { archetypes } = await import('./archetypes');
-
     const quizResult: QuizResult = {
       userId: userId || 'user-0', // Fallback to user-0 if somehow undefined
-      primaryArchetype: archetypes[preferences.primaryArchetype]?.name || preferences.primaryArchetype,
-      secondaryPreferences: preferences.secondaryPreferences.map(
-        id => archetypes[id]?.name || id
-      ),
+      primaryArchetype: preferences.primaryArchetype,
+      secondaryPreferences: preferences.secondaryPreferences,
       visibility: preferences.visibility,
       completedAt: serverTimestamp() as Timestamp,
       questionResponses,

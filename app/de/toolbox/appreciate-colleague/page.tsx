@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
@@ -28,7 +29,12 @@ const occasionLabels: Record<Occasion, string> = {
 
 export default function DeAppreciateColleaguePage() {
   const t = getTranslations('de');
+  const router = useRouter();
   const [selectedColleague, setSelectedColleague] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) router.replace('/');
+  }, [router]);
   const [relationship, setRelationship] = useState<Relationship>('peer');
   const [occasion, setOccasion] = useState<Occasion>('general');
   const [step, setStep] = useState<'select' | 'configure' | 'tips'>('select');

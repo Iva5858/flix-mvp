@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import TopBar from '@/components/TopBar';
 import BottomNav from '@/components/BottomNav';
 import { Icon } from '@/lib/icons';
@@ -10,7 +11,12 @@ import { getTranslations } from '@/lib/i18n';
 
 export default function DeAssessmentPage() {
   const t = getTranslations('de');
+  const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  useEffect(() => {
+    if (!localStorage.getItem('flix_user')) router.replace('/');
+  }, [router]);
   const [responses, setResponses] = useState<Record<number, string>>({});
   const [feedback, setFeedback] = useState<AssessmentFeedback | null>(null);
   const [loading, setLoading] = useState(false);
